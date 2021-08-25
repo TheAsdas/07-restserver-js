@@ -2,10 +2,14 @@ import express from "express";
 import dotenv from "dotenv";
 import * as core from "express-serve-static-core";
 import cors from "cors";
+import userRouter from "../routes/users";
 
 class Server {
   private static _app: core.Express;
   private static _port: string | undefined;
+  private static _routes = {
+    user: "/api/usuarios",
+  };
 
   /**
    * Configura el servidor.
@@ -20,18 +24,7 @@ class Server {
   }
 
   private static routes() {
-    this._app.get("/api", (req, res) => {
-      res.status(418).json({ status: "get", response: "Hola, mundo!" });
-    });
-    this._app.put("/api", (req, res) => {
-      res.json({ status: "put", response: "Hola, mundo!" });
-    });
-    this._app.post("/api", (req, res) => {
-      res.status(201).json({ status: "post", response: "Hola, mundo!" });
-    });
-    this._app.delete("/api", (req, res) => {
-      res.json({ status: "delete", response: "Hola, mundo!" });
-    });
+    this._app.use(this._routes.user, userRouter);
 
     return this;
   }
