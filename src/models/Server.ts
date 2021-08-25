@@ -30,7 +30,7 @@ class Server {
   }
 
   private static middlewares() {
-    this._app.use(express.static("dist/public"), cors());
+    this._app.use(express.static("dist/public"), cors(), express.json());
 
     return this;
   }
