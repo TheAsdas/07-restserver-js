@@ -1,11 +1,10 @@
 import express from "express";
-import dotenv from "dotenv";
-import * as core from "express-serve-static-core";
+import { Express } from "express-serve-static-core";
 import cors from "cors";
 import userRouter from "../routes/users";
 
 class Server {
-  private static _app: core.Express;
+  private static _app: Express;
   private static _port: string | undefined;
   private static _routes = {
     user: "/api/usuarios",
@@ -15,7 +14,6 @@ class Server {
    * Configura el servidor.
    */
   static init() {
-    //dotenv.config();
     this._app = express();
     this._port = process.env.PORT;
     this.middlewares().routes();
