@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const users_1 = __importDefault(require("../routes/users"));
+const es_1 = __importDefault(require("../lang/es"));
 class Server {
     static init() {
         this._app = express_1.default();
@@ -22,8 +23,9 @@ class Server {
         return this;
     }
     static listen() {
+        const { LISTENING_ON } = es_1.default;
         this._app.listen(this._port, () => {
-            console.log("Escuchando en el puerto " + this._port);
+            console.log(LISTENING_ON, this._port);
         });
         return this;
     }

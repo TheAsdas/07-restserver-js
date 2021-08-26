@@ -9,7 +9,7 @@
     "start": "node ./dist/app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Gustavo",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",

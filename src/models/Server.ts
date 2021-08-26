@@ -2,6 +2,7 @@ import express from "express";
 import { Express } from "express-serve-static-core";
 import cors from "cors";
 import userRouter from "../routes/users";
+import ES from "../lang/es";
 
 class Server {
   private static _app: Express;
@@ -34,8 +35,9 @@ class Server {
   }
 
   static listen() {
+    const { LISTENING_ON } = ES;
     this._app.listen(this._port, () => {
-      console.log("Escuchando en el puerto " + this._port);
+      console.log(LISTENING_ON, this._port);
     });
 
     return this;
