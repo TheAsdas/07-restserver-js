@@ -3,4 +3,9 @@ import Server from "./models/Server";
 
 dotenv.config();
 
-Server.init().listen();
+const main = async () => {
+    const server = await Server.init();
+    server.listen();
+}
+
+main();

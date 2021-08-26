@@ -1,4 +1,5 @@
 import { RequestHandler } from "express";
+import Usuario from "../models/Usuario";
 
 export const users_get: RequestHandler = (req, res) => {
   const { tuVieja, tuHermana } = req.query;
@@ -14,7 +15,10 @@ export const users_put: RequestHandler = (req, res) => {
 
 export const users_post: RequestHandler = (req, res) => {
   const body = req.body;
-  res.status(201).json({ status: "post", response: "Hola, mundo!", body });
+  const usuario = new Usuario(body);
+
+  console.log(body);
+  res.json(req.body);
 };
 
 export const users_delete: RequestHandler = (req, res) => {
