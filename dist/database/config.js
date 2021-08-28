@@ -14,18 +14,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.connectToDb = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
-const es_1 = __importDefault(require("../lang/es"));
-const { CON_SUCC, CON_FAIL } = es_1.default.DB;
 const connectToDb = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const uri = process.env.MONGO;
         if (uri)
             yield mongoose_1.default.connect(uri, {});
-        console.log(CON_SUCC);
+        console.log("Conexión exitosa con la base de datos.");
     }
     catch (error) {
         console.log(error);
-        throw new Error(CON_FAIL);
+        throw new Error("No pudimos conectarnos con la base de datos.");
     }
 });
 exports.connectToDb = connectToDb;

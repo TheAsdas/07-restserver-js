@@ -1,15 +1,12 @@
 import mongoose from "mongoose";
-import ES from "../lang/es";
-
-const { CON_SUCC, CON_FAIL } = ES.DB;
 
 export const connectToDb = async () => {
   try {
     const uri = process.env.MONGO;
     if (uri) await mongoose.connect(uri, {});
-    console.log(CON_SUCC);
+    console.log("Conexión exitosa con la base de datos.");
   } catch (error) {
     console.log(error);
-    throw new Error(CON_FAIL);
+    throw new Error("No pudimos conectarnos con la base de datos.");
   }
 };

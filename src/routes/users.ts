@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { users_patch } from '../controller/users';
+import { check } from "express-validator";
+import { users_patch } from "../controller/users";
 import {
   users_delete,
   users_get,
@@ -13,10 +14,14 @@ userRouter.get("/", users_get);
 
 userRouter.put("/:id", users_put);
 
-userRouter.post("/", users_post);
+userRouter.post(
+  "/",
+  [check("correo", "El correo no es válido.").isEmail()],
+  users_post
+);
 
 userRouter.delete("/", users_delete);
 
-userRouter.patch("/", users_patch)
+userRouter.patch("/", users_patch);
 
 export default userRouter;
