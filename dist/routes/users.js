@@ -24,10 +24,17 @@ const users_put_middlewares = [
     express_validator_1.check("rol").custom(db_validator_1.validateRole),
     field_validations_1.validate,
 ];
+const user_delete_middlewares = [
+    express_validator_1.check("id")
+        .isMongoId()
+        .withMessage("La ID no es válida.")
+        .custom(db_validator_1.userIdIsValid),
+    field_validations_1.validate,
+];
 userRouter.get("/", users_2.users_get);
 userRouter.put("/:id", users_put_middlewares, users_2.users_put);
 userRouter.post("/", users_post_middlewares, users_2.users_post);
-userRouter.delete("/", users_2.users_delete);
+userRouter.delete("/:id", user_delete_middlewares, users_2.users_delete);
 userRouter.patch("/", users_1.users_patch);
 exports.default = userRouter;
 //# sourceMappingURL=users.js.map

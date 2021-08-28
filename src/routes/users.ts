@@ -27,7 +27,6 @@ const users_post_middlewares = [
   ).isLength({ min: 6 }),
   check("rol").custom(validateRole),
   check("correo", "El correo no es válido.").isEmail().custom(userIsUnique),
-  //check("correo"),
   validate,
 ];
 
@@ -40,13 +39,21 @@ const users_put_middlewares = [
   validate,
 ];
 
-userRouter.get("/",  users_get);
+const user_delete_middlewares = [
+  check("id")
+    .isMongoId()
+    .withMessage("La ID no es válida.")
+    .custom(userIdIsValid),
+  validate,
+];
+
+userRouter.get("/", users_get);
 
 userRouter.put("/:id", users_put_middlewares, users_put);
 
 userRouter.post("/", users_post_middlewares, users_post);
 
-userRouter.delete("/", users_delete);
+userRouter.delete("/:id", user_delete_middlewares, users_delete);
 
 userRouter.patch("/", users_patch);
 

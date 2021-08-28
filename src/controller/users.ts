@@ -56,8 +56,15 @@ export const users_post: RequestHandler = async (req, res) => {
     .json({ msg: "Hemos creado al usuario exitosamente.", usuario });
 };
 
-export const users_delete: RequestHandler = (req, res) => {
-  res.json({ status: "delete", response: "Hola, mundo!" });
+export const users_delete: RequestHandler = async (req, res) => {
+  const { id } = req.params;
+
+  //Borrar físicamente:
+  // const usuario = await Usuario.findByIdAndRemove(id);
+  // Borrar ideologicamente:
+  const usuario = await Usuario.findByIdAndUpdate(id, { estado: false });
+
+  return res.json({ msg: "Hemos borrado el usuario correctamente.", usuario });
 };
 
 export const users_patch: RequestHandler = (req, res) => {

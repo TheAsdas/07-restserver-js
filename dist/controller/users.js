@@ -69,9 +69,11 @@ const users_post = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         .json({ msg: "Hemos creado al usuario exitosamente.", usuario });
 });
 exports.users_post = users_post;
-const users_delete = (req, res) => {
-    res.json({ status: "delete", response: "Hola, mundo!" });
-};
+const users_delete = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const usuario = yield Usuario_1.default.findByIdAndUpdate(id, { estado: false });
+    return res.json({ msg: "Hemos borrado el usuario correctamente.", usuario });
+});
 exports.users_delete = users_delete;
 const users_patch = (req, res) => {
     res.json({ status: "patch", response: "Hola, mundo!" });
