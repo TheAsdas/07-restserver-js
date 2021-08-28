@@ -2,11 +2,26 @@ import { RequestHandler } from "express";
 import Usuario from "../models/Usuario";
 import { hashSync } from "bcryptjs";
 
-export const users_get: RequestHandler = (req, res) => {
-  const { tuVieja, tuHermana } = req.query;
-  res
-    .status(418)
-    .json({ status: "get", response: "Hola, mundo!", tuVieja, tuHermana });
+export const users_get: RequestHandler = async (req, res) => {
+  const { limite = 5, desde = 0 } = req.query;
+  const errors: { msg: string }[] = [];
+
+  if (isNaN(Number(limite)))
+    errors.push({ msg: "El límite no es un número válido." });
+
+  if (isNaN(Number(desde)))
+    errors.push({ msg: "Desde no es un número válido." });
+
+  if (errors.length !== 0) return res.json({ errors: errors });
+
+  const query = { estado: true };
+
+  const [total, usuarios] = await Promise.all([
+    Usuario.count(query),
+    Usuario.find(query).skip(Number(desde)).limit(Number(limite)),
+  ]);
+
+  return res.json({ total, usuarios });
 };
 
 export const users_put: RequestHandler = async (req, res) => {

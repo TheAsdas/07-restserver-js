@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 
-export interface iUsuario {
+interface iUsuario {
   nombre: string;
   correo: string;
   clave: string;
@@ -10,7 +10,7 @@ export interface iUsuario {
   google: boolean;
 }
 
-const schema = new Schema<iUsuario>({
+const schema = new Schema({
   nombre: {
     type: String,
     required: [true, "El nombre es obligatorio."],
@@ -46,4 +46,4 @@ schema.methods.toJSON = function () {
   return user;
 };
 
-export default model("Usuario", schema);
+export default model<iUsuario>("Usuario", schema);

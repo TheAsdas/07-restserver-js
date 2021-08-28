@@ -31,7 +31,7 @@ const users_post_middlewares = [
   validate,
 ];
 
-const users_get_middlewares = [
+const users_put_middlewares = [
   check("id")
     .isMongoId()
     .withMessage("La ID no es válida.")
@@ -40,9 +40,9 @@ const users_get_middlewares = [
   validate,
 ];
 
-userRouter.get("/", users_get);
+userRouter.get("/",  users_get);
 
-userRouter.put("/:id", users_get_middlewares, users_put);
+userRouter.put("/:id", users_put_middlewares, users_put);
 
 userRouter.post("/", users_post_middlewares, users_post);
 

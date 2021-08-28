@@ -26,12 +26,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.users_patch = exports.users_delete = exports.users_post = exports.users_put = exports.users_get = void 0;
 const Usuario_1 = __importDefault(require("../models/Usuario"));
 const bcryptjs_1 = require("bcryptjs");
-const users_get = (req, res) => {
-    const { tuVieja, tuHermana } = req.query;
-    res
-        .status(418)
-        .json({ status: "get", response: "Hola, mundo!", tuVieja, tuHermana });
-};
+const users_get = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { limite = 5, desde = 0 } = req.query;
+    const errors = [];
+    if (isNaN(Number(limite)))
+        errors.push({ msg: "El límite no es un número válido." });
+    if (isNaN(Number(desde)))
+        errors.push({ msg: "Desde no es un número válido." });
+    if (errors.length !== 0)
+        return res.json({ errors: errors });
+    const query = { estado: true };
+    const [total, usuarios] = yield Promise.all([
+        Usuario_1.default.count(query),
+        Usuario_1.default.find(query).skip(Number(desde)).limit(Number(limite)),
+    ]);
+    return res.json({ total, usuarios });
+});
 exports.users_get = users_get;
 const users_put = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
