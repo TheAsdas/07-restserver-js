@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import Usuario from "../models/Usuario";
-import bcryptjs from "bcryptjs";
+import { hashSync } from "bcryptjs";
 
 export const users_get: RequestHandler = (req, res) => {
   const { tuVieja, tuHermana } = req.query;
@@ -9,9 +9,17 @@ export const users_get: RequestHandler = (req, res) => {
     .json({ status: "get", response: "Hola, mundo!", tuVieja, tuHermana });
 };
 
-export const users_put: RequestHandler = (req, res) => {
+export const users_put: RequestHandler = async (req, res) => {
   const { id } = req.params;
-  res.json({ status: "put", response: "Hola, mundo!", id });
+  const { clave, google, ...data } = req.body;
+
+  if (clave) {
+    data.clave = hashSync(clave);
+  }
+
+  const usuario = await Usuario.findByIdAndUpdate(id, data);
+
+  res.json({ msg: "Usuario actualizado.", usuario });
 };
 
 export const users_post: RequestHandler = async (req, res) => {
@@ -19,8 +27,7 @@ export const users_post: RequestHandler = async (req, res) => {
   const usuario = new Usuario({ nombre, correo, clave, rol });
 
   //Encriptar la contraseña:
-  const salt = bcryptjs.genSaltSync();
-  usuario.clave = bcryptjs.hashSync(clave, salt);
+  usuario.clave = hashSync(clave);
 
   //Guardar en DB
   try {

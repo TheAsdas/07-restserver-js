@@ -41,4 +41,9 @@ const schema = new Schema<iUsuario>({
   },
 });
 
+schema.methods.toJSON = function () {
+  const { __v, clave, ...user } = this.toObject();
+  return user;
+};
+
 export default model("Usuario", schema);
