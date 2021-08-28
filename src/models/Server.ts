@@ -2,10 +2,11 @@ import express from "express";
 import { Express } from "express-serve-static-core";
 import cors from "cors";
 import userRouter from "../routes/users";
-import { conectarDb } from "../database/config";
+import { connectToDb } from "../database/config";
 
 class Server {
   private static _app: Express;
+  public static _ready: boolean;
   private static _port: string | undefined;
   private static _routes = {
     user: "/api/usuarios",
@@ -23,34 +24,19 @@ class Server {
    * @returns La instancia del servidor.
    */
   static async init() {
-    //crear server y conseguir puerto
     this._app = express();
     this._port = process.env.PORT;
-    //conectar a base de datos
-    await this.conectar();
-    //configurar servidor
-    this.routes().middlewares();
+    this._ready = false;
+    await (await this.connect()).middlewares().routes();
 
     return this;
   }
 
-  /**
-   * # Conectar a DB:
-   * Conecta el servidor a la base de datos.
-   *
-   * @returns La instancia del servidor.
-   */
-  private static async conectar() {
-    await conectarDb();
-
+  private static async connect() {
+    await connectToDb();
     return this;
   }
 
-  /**
-   * # Rutas
-   * Configura las rutas del servidor.
-   * @returns La instancia del servidor.
-   */
   private static routes() {
     this._app.use(this._routes.user, userRouter);
 
@@ -77,7 +63,7 @@ class Server {
    */
   static listen() {
     this._app.listen(this._port, () => {
-      console.log("Escuchando en el puerto " + this._port);
+      console.log("Servidor escuchando en el puerto", this._port);
     });
 
     return this;

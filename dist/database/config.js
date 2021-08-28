@@ -12,20 +12,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.conectarDb = void 0;
+exports.connectToDb = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
-const conectarDb = () => __awaiter(void 0, void 0, void 0, function* () {
+const connectToDb = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const uri = process.env.MONGO_CONNECTION;
-        if (uri) {
-            yield mongoose_1.default.connect(uri, {}, () => { });
-            console.log("Conexión a la base de datos exitosa.");
-        }
+        const uri = process.env.MONGO;
+        if (uri)
+            yield mongoose_1.default.connect(uri, {});
+        console.log("Conexión exitosa con la base de datos.");
     }
     catch (error) {
         console.log(error);
-        throw new Error("Fue imposible conectarse a la base de datos.");
+        throw new Error("No pudimos conectarnos con la base de datos.");
     }
 });
-exports.conectarDb = conectarDb;
+exports.connectToDb = connectToDb;
 //# sourceMappingURL=config.js.map

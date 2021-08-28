@@ -1,16 +1,16 @@
 import { model, Schema } from "mongoose";
 
-interface Usuario {
+interface iUsuario {
   nombre: string;
   correo: string;
   clave: string;
   img?: string;
-  rol: boolean;
+  rol: string;
   estado: boolean;
   google: boolean;
 }
 
-const UsuarioSchema = new Schema({
+const schema = new Schema({
   nombre: {
     type: String,
     required: [true, "El nombre es obligatorio."],
@@ -18,11 +18,11 @@ const UsuarioSchema = new Schema({
   correo: {
     type: String,
     required: [true, "El correo es obligatorio."],
-    unique: [true, "Este correo ya está registrado."],
+    unique: true,
   },
   clave: {
     type: String,
-    required: [true, "La contraseña es obligatoria."],
+    required: [true, "La contraseña es obligatoria"],
   },
   img: {
     type: String,
@@ -30,7 +30,6 @@ const UsuarioSchema = new Schema({
   rol: {
     type: String,
     required: true,
-    enum: ["ADMIN", "USER"],
   },
   estado: {
     type: Boolean,
@@ -42,4 +41,9 @@ const UsuarioSchema = new Schema({
   },
 });
 
-export default model<Usuario>("Usuario", UsuarioSchema);
+schema.methods.toJSON = function () {
+  const { __v, clave, ...user } = this.toObject();
+  return user;
+};
+
+export default model<iUsuario>("Usuario", schema);

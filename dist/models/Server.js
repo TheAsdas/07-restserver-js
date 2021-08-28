@@ -21,14 +21,14 @@ class Server {
         return __awaiter(this, void 0, void 0, function* () {
             this._app = express_1.default();
             this._port = process.env.PORT;
-            yield this.conectar();
-            this.routes().middlewares();
+            this._ready = false;
+            yield (yield this.connect()).middlewares().routes();
             return this;
         });
     }
-    static conectar() {
+    static connect() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield config_1.conectarDb();
+            yield config_1.connectToDb();
             return this;
         });
     }
@@ -42,7 +42,7 @@ class Server {
     }
     static listen() {
         this._app.listen(this._port, () => {
-            console.log("Escuchando en el puerto " + this._port);
+            console.log("Servidor escuchando en el puerto", this._port);
         });
         return this;
     }
