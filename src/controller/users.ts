@@ -1,8 +1,6 @@
 import { RequestHandler } from "express";
 import Usuario from "../models/Usuario";
 import bcryptjs from "bcryptjs";
-import { iUsuario } from "../models/Usuario";
-import { validationResult } from "express-validator";
 
 export const users_get: RequestHandler = (req, res) => {
   const { tuVieja, tuHermana } = req.query;
@@ -19,17 +17,6 @@ export const users_put: RequestHandler = (req, res) => {
 export const users_post: RequestHandler = async (req, res) => {
   const { nombre, correo, clave, rol } = req.body;
   const usuario = new Usuario({ nombre, correo, clave, rol });
-
-  const errores = validationResult(req);
-  if (!errores.isEmpty()) {
-    return res.status(400).json(errores);
-  }
-
-  //verificar correo:
-  if (await Usuario.exists({ correo }))
-    return res
-      .status(400)
-      .json({ msg: "Este correo ya está registrado en el sistema." });
 
   //Encriptar la contraseña:
   const salt = bcryptjs.genSaltSync();

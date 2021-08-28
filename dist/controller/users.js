@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.users_patch = exports.users_delete = exports.users_post = exports.users_put = exports.users_get = void 0;
 const Usuario_1 = __importDefault(require("../models/Usuario"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const express_validator_1 = require("express-validator");
 const users_get = (req, res) => {
     const { tuVieja, tuHermana } = req.query;
     res
@@ -31,14 +30,6 @@ exports.users_put = users_put;
 const users_post = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { nombre, correo, clave, rol } = req.body;
     const usuario = new Usuario_1.default({ nombre, correo, clave, rol });
-    const errores = express_validator_1.validationResult(req);
-    if (!errores.isEmpty()) {
-        return res.status(400).json(errores);
-    }
-    if (yield Usuario_1.default.exists({ correo }))
-        return res
-            .status(400)
-            .json({ msg: "Este correo ya está registrado en el sistema." });
     const salt = bcryptjs_1.default.genSaltSync();
     usuario.clave = bcryptjs_1.default.hashSync(clave, salt);
     try {

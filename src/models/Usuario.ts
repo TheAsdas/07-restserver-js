@@ -29,7 +29,6 @@ const schema = new Schema<iUsuario>({
   },
   rol: {
     type: String,
-    enum: ["ADMIN", "USER"],
     required: true,
   },
   estado: {

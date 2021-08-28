@@ -20,7 +20,6 @@ const schema = new mongoose_1.Schema({
     },
     rol: {
         type: String,
-        enum: ["ADMIN", "USER"],
         required: true,
     },
     estado: {
