@@ -43,7 +43,8 @@ const schema = new mongoose_1.Schema({
     },
 });
 schema.methods.toJSON = function () {
-    const _a = this.toObject(), { __v, clave } = _a, user = __rest(_a, ["__v", "clave"]);
+    const _a = this.toObject(), { __v, clave, _id } = _a, user = __rest(_a, ["__v", "clave", "_id"]);
+    user.uid = _id;
     return user;
 };
 exports.default = mongoose_1.model("Usuario", schema);

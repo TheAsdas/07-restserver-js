@@ -16,12 +16,12 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const users_1 = __importDefault(require("../routes/users"));
 const config_1 = require("../database/config");
+const auth_1 = __importDefault(require("../routes/auth"));
 class Server {
     static init() {
         return __awaiter(this, void 0, void 0, function* () {
             this._app = express_1.default();
             this._port = process.env.PORT;
-            this._ready = false;
             yield (yield this.connect()).middlewares().routes();
             return this;
         });
@@ -33,6 +33,7 @@ class Server {
         });
     }
     static routes() {
+        this._app.use(this._routes.auth, auth_1.default);
         this._app.use(this._routes.user, users_1.default);
         return this;
     }
@@ -49,6 +50,7 @@ class Server {
 }
 Server._routes = {
     user: "/api/usuarios",
+    auth: "/api/auth"
 };
 exports.default = Server;
 //# sourceMappingURL=Server.js.map

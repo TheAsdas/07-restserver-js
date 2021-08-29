@@ -8,6 +8,7 @@ interface iUsuario {
   rol: string;
   estado: boolean;
   google: boolean;
+  uid: string;
 }
 
 const schema = new Schema({
@@ -42,7 +43,8 @@ const schema = new Schema({
 });
 
 schema.methods.toJSON = function () {
-  const { __v, clave, ...user } = this.toObject();
+  const { __v, clave, _id, ...user } = this.toObject();
+  user.uid = _id;
   return user;
 };
 
