@@ -2,8 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
-const users_1 = require("../controller/users");
 const field_validations_1 = require("../middlewares/field-validations");
+const validate_jwt_1 = require("../middlewares/validate-jwt");
+const users_1 = require("../controller/users");
+const validate_roles_1 = require("../middlewares/validate-roles");
 const users_2 = require("../controller/users");
 const db_validator_1 = require("../helpers/db-validator");
 const userRouter = express_1.Router();
@@ -25,6 +27,8 @@ const users_put_middlewares = [
     field_validations_1.validate,
 ];
 const user_delete_middlewares = [
+    validate_jwt_1.validateJwt,
+    validate_roles_1.userIsAdmin,
     express_validator_1.check("id")
         .isMongoId()
         .withMessage("La ID no es válida.")

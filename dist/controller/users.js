@@ -71,8 +71,16 @@ const users_post = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.users_post = users_post;
 const users_delete = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const usuario = yield Usuario_1.default.findByIdAndUpdate(id, { estado: false });
-    return res.json({ msg: "Hemos borrado el usuario correctamente.", usuario });
+    const uid = req.header("uid");
+    const rol = req.header("rol");
+    const requestingUser = req.user;
+    const deletedUser = yield Usuario_1.default.findByIdAndUpdate(id, { estado: false });
+    return res.json({
+        msg: "Hemos borrado el usuario correctamente.",
+        requestingUser,
+        deletedUser,
+        uid,
+    });
 });
 exports.users_delete = users_delete;
 const users_patch = (req, res) => {

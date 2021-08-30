@@ -58,13 +58,19 @@ export const users_post: RequestHandler = async (req, res) => {
 
 export const users_delete: RequestHandler = async (req, res) => {
   const { id } = req.params;
+  const uid = req.header("uid");
+  const rol = req.header("rol");
+  ///@ts-ignore
+  const requestingUser = req.user;
 
-  //Borrar físicamente:
-  // const usuario = await Usuario.findByIdAndRemove(id);
-  // Borrar ideologicamente:
-  const usuario = await Usuario.findByIdAndUpdate(id, { estado: false });
+  const deletedUser = await Usuario.findByIdAndUpdate(id, { estado: false });
 
-  return res.json({ msg: "Hemos borrado el usuario correctamente.", usuario });
+  return res.json({
+    msg: "Hemos borrado el usuario correctamente.",
+    requestingUser,
+    deletedUser,
+    uid,
+  });
 };
 
 export const users_patch: RequestHandler = (req, res) => {

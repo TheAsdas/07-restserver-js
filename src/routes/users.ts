@@ -1,8 +1,11 @@
 import { Router } from "express";
 import { check } from "express-validator";
 
-import { users_patch } from "../controller/users";
 import { validate } from "../middlewares/field-validations";
+import { validateJwt } from '../middlewares/validate-jwt';
+
+import { users_patch } from "../controller/users";
+import { userIsAdmin } from '../middlewares/validate-roles';
 import {
   users_delete,
   users_get,
@@ -40,6 +43,8 @@ const users_put_middlewares = [
 ];
 
 const user_delete_middlewares = [
+  validateJwt,
+  userIsAdmin,
   check("id")
     .isMongoId()
     .withMessage("La ID no es válida.")

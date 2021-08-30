@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 
-interface iUsuario {
+export interface iUsuario {
   nombre: string;
   correo: string;
   clave: string;
@@ -8,7 +8,7 @@ interface iUsuario {
   rol: string;
   estado: boolean;
   google: boolean;
-  uid: string;
+  _id: string;
 }
 
 const schema = new Schema({
