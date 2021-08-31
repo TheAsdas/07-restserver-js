@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
 import { iUsuario } from "../models/Usuario";
+import { iMiddleware } from "./middlewares";
 
-export const userIsAdmin = (req: Request, res: Response, next: Function) => {
+export const userIsAdmin: iMiddleware = (req, res, next) => {
   ///@ts-ignore
   const usuario: iUsuario = req.user;
   if (!usuario)
@@ -15,4 +15,26 @@ export const userIsAdmin = (req: Request, res: Response, next: Function) => {
       .status(401)
       .json({ msg: `${nombre} no tiene permisos de ADMIN.` });
   next();
+};
+
+/**
+ *
+ * @param validRoles Arreglo con los roles válidos que acepta la petición.
+ * @returns Middleware
+ */
+export const userHasRoles = (...validRoles: string[]): iMiddleware => {
+  return (req, res, next) => {
+    ///@ts-ignore
+    const userRole = req.user.rol;
+    console.log(userRole);
+
+    if (!validRoles.includes(userRole))
+      return res.status(401).json({
+        msg: `El usuario tiene el rol ${userRole}, y no tiene permisos. Roles con permisiones: ${validRoles.join(
+          ", "
+        )}.`,
+      });
+
+    next();
+  };
 };

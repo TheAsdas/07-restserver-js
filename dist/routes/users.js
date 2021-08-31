@@ -4,9 +4,8 @@ const express_1 = require("express");
 const express_validator_1 = require("express-validator");
 const field_validations_1 = require("../middlewares/field-validations");
 const validate_jwt_1 = require("../middlewares/validate-jwt");
-const users_1 = require("../controller/users");
 const validate_roles_1 = require("../middlewares/validate-roles");
-const users_2 = require("../controller/users");
+const users_1 = require("../controller/users");
 const db_validator_1 = require("../helpers/db-validator");
 const userRouter = express_1.Router();
 const users_post_middlewares = [
@@ -28,17 +27,17 @@ const users_put_middlewares = [
 ];
 const user_delete_middlewares = [
     validate_jwt_1.validateJwt,
-    validate_roles_1.userIsAdmin,
+    validate_roles_1.userHasRoles("ADMIN"),
     express_validator_1.check("id")
         .isMongoId()
         .withMessage("La ID no es válida.")
         .custom(db_validator_1.userIdIsValid),
     field_validations_1.validate,
 ];
-userRouter.get("/", users_2.users_get);
-userRouter.put("/:id", users_put_middlewares, users_2.users_put);
-userRouter.post("/", users_post_middlewares, users_2.users_post);
-userRouter.delete("/:id", user_delete_middlewares, users_2.users_delete);
+userRouter.get("/", users_1.users_get);
+userRouter.put("/:id", users_put_middlewares, users_1.users_put);
+userRouter.post("/", users_post_middlewares, users_1.users_post);
+userRouter.delete("/:id", user_delete_middlewares, users_1.users_delete);
 userRouter.patch("/", users_1.users_patch);
 exports.default = userRouter;
 //# sourceMappingURL=users.js.map
