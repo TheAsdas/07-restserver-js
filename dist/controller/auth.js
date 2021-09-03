@@ -72,7 +72,7 @@ const googleSignIn = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     catch (error) {
         const { code, message } = error;
         console.log(error);
-        return res.status(code !== null && code !== void 0 ? code : 500).json({ msg: message });
+        return res.status(code !== null && code !== void 0 ? code : 400).json({ msg: message });
     }
 });
 exports.googleSignIn = googleSignIn;

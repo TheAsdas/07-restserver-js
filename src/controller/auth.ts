@@ -70,6 +70,6 @@ export const googleSignIn: RequestHandler = async (req, res) => {
     const { code, message } = error;
 
     console.log(error);
-    return res.status(code ?? 500).json({ msg: message });
+    return res.status(code ?? 400).json({ msg: message });
   }
 };
