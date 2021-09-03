@@ -8,23 +8,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifyGoogleCredentials = void 0;
 const google_auth_library_1 = require("google-auth-library");
+const RequestError_1 = __importDefault(require("../models/RequestError"));
 const CLIENT_ID = process.env.G_PKEY;
 const client = new google_auth_library_1.OAuth2Client(CLIENT_ID);
 const verifyGoogleCredentials = (idToken) => __awaiter(void 0, void 0, void 0, function* () {
-    const ticket = yield client.verifyIdToken({
-        idToken: idToken,
-        audience: CLIENT_ID,
-    });
-    const payload = ticket.getPayload();
-    const userData = {
-        nombre: payload === null || payload === void 0 ? void 0 : payload.name,
-        img: payload === null || payload === void 0 ? void 0 : payload.picture,
-        correo: payload === null || payload === void 0 ? void 0 : payload.email,
-    };
-    return userData;
+    try {
+        const ticket = yield client.verifyIdToken({
+            idToken: idToken,
+            audience: CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        const userData = {
+            nombre: payload === null || payload === void 0 ? void 0 : payload.name,
+            img: payload === null || payload === void 0 ? void 0 : payload.picture,
+            correo: payload === null || payload === void 0 ? void 0 : payload.email,
+        };
+        return userData;
+    }
+    catch (error) {
+        throw new RequestError_1.default(400, error.message);
+    }
 });
 exports.verifyGoogleCredentials = verifyGoogleCredentials;
 //# sourceMappingURL=google-auth.js.map
