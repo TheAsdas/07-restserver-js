@@ -1,12 +1,8 @@
-import { Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import Usuario from "../models/Usuario";
+import { Middleware } from "./middlewares";
 
-export const validateJwt = async (
-  req: Request,
-  res: Response,
-  next: Function
-) => {
+export const validateJwt: Middleware = async (req, res, next) => {
   const token = req.header("x-token");
 
   if (!token)
@@ -21,8 +17,8 @@ export const validateJwt = async (
       const user = await Usuario.findOne({ _id: uid, estado: true });
 
       console.log(user);
-      
-      if (!user) throw new Error("Los muertos no pueden votar." );
+
+      if (!user) throw new Error("Los muertos no pueden votar.");
       req.headers["uid"] = uid;
       ///@ts-ignore
       req.user = user;

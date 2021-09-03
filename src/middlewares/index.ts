@@ -1,5 +1,5 @@
-import * as fieldValidations from "./field-validations";
-import * as validateJWT from "./validate-jwt";
-import * as validateRoles from "./validate-roles";
+import { validate } from "./field-validations";
+import { validateJwt } from "./validate-jwt";
+import { userHasRoles, userIsAdmin } from "./validate-roles";
 
-module.exports = { ...fieldValidations, ...validateJWT, ...validateRoles };
+export { validate, validateJwt, userHasRoles, userIsAdmin };

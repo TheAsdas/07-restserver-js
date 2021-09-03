@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
-export type iMiddleware = (
+export type Middleware = (
   req: Request,
   res: Response,
   next: Function
-) => void | Response;
+) => any;

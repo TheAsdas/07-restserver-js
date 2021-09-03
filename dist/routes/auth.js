@@ -15,6 +15,14 @@ const login_middlewares = [
         .withMessage("Tienes que proveer una contraseña válida."),
     field_validations_1.validate,
 ];
+const google_middlewares = [
+    express_validator_1.check("id_token")
+        .not()
+        .isEmpty()
+        .withMessage("Tienes que proveer el token de Google."),
+    field_validations_1.validate,
+];
 authRouter.post("/login", login_middlewares, auth_1.login);
+authRouter.post("/google", google_middlewares, auth_1.googleSignIn);
 exports.default = authRouter;
 //# sourceMappingURL=auth.js.map

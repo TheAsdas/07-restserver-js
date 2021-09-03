@@ -1,7 +1,7 @@
 import { iUsuario } from "../models/Usuario";
-import { iMiddleware } from "./middlewares";
+import { Middleware } from "./middlewares";
 
-export const userIsAdmin: iMiddleware = (req, res, next) => {
+export const userIsAdmin: Middleware = (req, res, next) => {
   ///@ts-ignore
   const usuario: iUsuario = req.user;
   if (!usuario)
@@ -22,7 +22,7 @@ export const userIsAdmin: iMiddleware = (req, res, next) => {
  * @param validRoles Arreglo con los roles válidos que acepta la petición.
  * @returns Middleware
  */
-export const userHasRoles = (...validRoles: string[]): iMiddleware => {
+export const userHasRoles = (...validRoles: string[]): Middleware => {
   return (req, res, next) => {
     ///@ts-ignore
     const userRole = req.user.rol;

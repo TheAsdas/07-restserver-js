@@ -1,5 +1,5 @@
 import { validationResult } from "express-validator";
-import { Middleware } from "express-validator/src/base";
+import { Middleware } from "./middlewares";
 
 export const validate: Middleware = (req, res, next) => {
   const errores = validationResult(req);

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { login } from "../controller/auth";
+import { login, googleSignIn } from '../controller/auth';
 import { check } from "express-validator";
 import { validate } from "../middlewares/field-validations";
 
@@ -16,6 +16,15 @@ const login_middlewares = [
   validate,
 ];
 
+const google_middlewares = [
+  check("id_token")
+    .not()
+    .isEmpty()
+    .withMessage("Tienes que proveer el token de Google."),
+  validate,
+];
+
 authRouter.post("/login", login_middlewares, login);
+authRouter.post("/google", google_middlewares, googleSignIn);
 
 export default authRouter;

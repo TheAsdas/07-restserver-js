@@ -1,10 +1,7 @@
 import { Router } from "express";
 import { check } from "express-validator";
 
-import { validate } from "../middlewares/field-validations";
-import { validateJwt } from "../middlewares/validate-jwt";
-import { userHasRoles } from "../middlewares/validate-roles";
-
+import { validate, userHasRoles, validateJwt } from "../middlewares";
 import {
   users_delete,
   users_get,

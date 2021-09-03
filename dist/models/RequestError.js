@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 class RequestError extends Error {
     constructor(code, message) {
         super(message);
-        this.status = code;
+        this.code = code;
     }
 }
 exports.default = RequestError;

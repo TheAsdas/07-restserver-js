@@ -1,9 +1,9 @@
 class RequestError extends Error {
-  status: number;
+  code: number;
 
   constructor(code: number, message: string) {
     super(message);
-    this.status = code;
+    this.code = code;
   }
 }
 
