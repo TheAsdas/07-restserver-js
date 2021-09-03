@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "nodemon ./dist/app.js",
-    "test-win": "supervisor ./dist/app.js",
+    "test-nodemon": "nodemon ./dist/app.js",
+    "test-supervisor": "supervisor ./dist/app.js",
     "start": "node ./dist/app.js"
   },
   "keywords": [],
