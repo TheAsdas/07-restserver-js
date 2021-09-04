@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifyGoogleCredentials = void 0;
 const google_auth_library_1 = require("google-auth-library");
-const RequestError_1 = __importDefault(require("../models/RequestError"));
+const RequestError_1 = __importDefault(require("../errors/RequestError"));
 const CLIENT_ID = process.env.G_PKEY;
 const client = new google_auth_library_1.OAuth2Client(CLIENT_ID);
 const verifyGoogleCredentials = (idToken) => __awaiter(void 0, void 0, void 0, function* () {
@@ -32,7 +32,7 @@ const verifyGoogleCredentials = (idToken) => __awaiter(void 0, void 0, void 0, f
         return userData;
     }
     catch (error) {
-        throw new RequestError_1.default(400, error.message);
+        throw RequestError_1.default([400, error.message]);
     }
 });
 exports.verifyGoogleCredentials = verifyGoogleCredentials;

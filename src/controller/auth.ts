@@ -2,23 +2,22 @@ import { compareSync } from "bcryptjs";
 import { RequestHandler } from "express";
 import Usuario from "../models/Usuario";
 import { generateJwt } from "../helpers/json-web-tokens";
-import RequestError from "../models/RequestError";
+import RequestError from "../errors/RequestError";
 import { verifyGoogleCredentials } from "../helpers/google-auth";
+import authErrors  from "../errors/authErrors";
 
 export const login: RequestHandler = async (req, res) => {
   const { correo, clave } = req.body;
   const usuario = await Usuario.findOne({ correo, estado: true });
 
   try {
-    const notRegistered =
-      "Este usuario no está registrado en la base de datos.";
-    const incorrectPass = "La contraseña está incorrecta.";
+    const { USER_NOT_REGISTERED, USER_USED_GOOGLE, INCORRECT_PASSWORD } =
+      authErrors;
 
-    if (!usuario) throw new RequestError(401, notRegistered);
-
-    // si la contraseña está incorrecta:
+    if (!usuario) throw RequestError(USER_NOT_REGISTERED);
+    if (usuario.google) throw RequestError(USER_USED_GOOGLE);
     if (!compareSync(clave, usuario.clave))
-      throw new RequestError(401, incorrectPass);
+      throw RequestError(INCORRECT_PASSWORD);
 
     // generar JWT
     const token = await generateJwt(usuario);
@@ -29,17 +28,18 @@ export const login: RequestHandler = async (req, res) => {
       token,
     });
   } catch (error) {
-    const { code: status, message } = error as RequestError;
+    const { status, message } = error;
     console.log(error);
     return res.status(status ?? 400).json({ msg: message });
   }
 };
 
-export const googleSignIn: RequestHandler = async (req, res) => {
+export const google: RequestHandler = async (req, res) => {
   const { id_token } = req.body;
 
   try {
     const { nombre, img, correo } = await verifyGoogleCredentials(id_token);
+    const { USER_DEACTIVATED } = authErrors;
 
     let usuario = await Usuario.findOne({ correo });
 
@@ -55,9 +55,7 @@ export const googleSignIn: RequestHandler = async (req, res) => {
       };
       usuario = new Usuario(userData);
       await usuario.save();
-    } else if (!usuario.estado) {
-      throw new RequestError(401, "Este usuario está desactivado.");
-    }
+    } else if (!usuario.estado) throw RequestError(USER_DEACTIVATED);
 
     const token = await generateJwt(usuario);
 
@@ -67,9 +65,9 @@ export const googleSignIn: RequestHandler = async (req, res) => {
       token,
     });
   } catch (error) {
-    const { code, message } = error;
+    const { status = 400, message: msg } = error;
 
     console.log(error);
-    return res.status(code ?? 400).json({ msg: message });
+    return res.status(status).json({ msg });
   }
 };

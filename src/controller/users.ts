@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import Usuario from "../models/Usuario";
 import { hashSync } from "bcryptjs";
 
-export const users_get: RequestHandler = async (req, res) => {
+export const get: RequestHandler = async (req, res) => {
   const { limite = 5, desde = 0 } = req.query;
   const errors: { msg: string }[] = [];
 
@@ -12,7 +12,7 @@ export const users_get: RequestHandler = async (req, res) => {
   if (isNaN(Number(desde)))
     errors.push({ msg: "Desde no es un número válido." });
 
-  if (errors.length !== 0) return res.json({ errors: errors });
+  if (errors.length !== 0) return res.json({ errors });
 
   const query = { estado: true };
 
@@ -24,9 +24,9 @@ export const users_get: RequestHandler = async (req, res) => {
   return res.json({ total, usuarios });
 };
 
-export const users_put: RequestHandler = async (req, res) => {
+export const put: RequestHandler = async (req, res) => {
   const { id } = req.params;
-  const { clave, google, ...data } = req.body;
+  const { clave, google, estado, _id, ...data } = req.body;
 
   if (clave) {
     data.clave = hashSync(clave);
@@ -37,7 +37,7 @@ export const users_put: RequestHandler = async (req, res) => {
   res.json({ msg: "Usuario actualizado.", usuario });
 };
 
-export const users_post: RequestHandler = async (req, res) => {
+export const post: RequestHandler = async (req, res) => {
   const { nombre, correo, clave, rol } = req.body;
   const usuario = new Usuario({ nombre, correo, clave, rol });
 
@@ -56,7 +56,7 @@ export const users_post: RequestHandler = async (req, res) => {
     .json({ msg: "Hemos creado al usuario exitosamente.", usuario });
 };
 
-export const users_delete: RequestHandler = async (req, res) => {
+export const delete_: RequestHandler = async (req, res) => {
   const { id } = req.params;
   const uid = req.header("uid");
   const rol = req.header("rol");
@@ -73,6 +73,6 @@ export const users_delete: RequestHandler = async (req, res) => {
   });
 };
 
-export const users_patch: RequestHandler = (req, res) => {
+export const patch: RequestHandler = (req, res) => {
   res.json({ status: "patch", response: "Hola, mundo!" });
 };

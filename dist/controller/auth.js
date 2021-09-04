@@ -12,22 +12,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.googleSignIn = exports.login = void 0;
+exports.google = exports.login = void 0;
 const bcryptjs_1 = require("bcryptjs");
 const Usuario_1 = __importDefault(require("../models/Usuario"));
 const json_web_tokens_1 = require("../helpers/json-web-tokens");
-const RequestError_1 = __importDefault(require("../models/RequestError"));
+const RequestError_1 = __importDefault(require("../errors/RequestError"));
 const google_auth_1 = require("../helpers/google-auth");
+const authErrors_1 = __importDefault(require("../errors/authErrors"));
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { correo, clave } = req.body;
     const usuario = yield Usuario_1.default.findOne({ correo, estado: true });
     try {
-        const notRegistered = "Este usuario no está registrado en la base de datos.";
-        const incorrectPass = "La contraseña está incorrecta.";
+        const { USER_NOT_REGISTERED, USER_USED_GOOGLE, INCORRECT_PASSWORD } = authErrors_1.default;
         if (!usuario)
-            throw new RequestError_1.default(401, notRegistered);
+            throw RequestError_1.default(USER_NOT_REGISTERED);
+        if (usuario.google)
+            throw RequestError_1.default(USER_USED_GOOGLE);
         if (!bcryptjs_1.compareSync(clave, usuario.clave))
-            throw new RequestError_1.default(401, incorrectPass);
+            throw RequestError_1.default(INCORRECT_PASSWORD);
         const token = yield json_web_tokens_1.generateJwt(usuario);
         return res.json({
             msg: "Andy's log are here.",
@@ -36,16 +38,17 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     catch (error) {
-        const { code: status, message } = error;
+        const { status, message } = error;
         console.log(error);
         return res.status(status !== null && status !== void 0 ? status : 400).json({ msg: message });
     }
 });
 exports.login = login;
-const googleSignIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const google = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id_token } = req.body;
     try {
         const { nombre, img, correo } = yield google_auth_1.verifyGoogleCredentials(id_token);
+        const { USER_DEACTIVATED } = authErrors_1.default;
         let usuario = yield Usuario_1.default.findOne({ correo });
         if (!usuario) {
             const userData = {
@@ -59,9 +62,8 @@ const googleSignIn = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             usuario = new Usuario_1.default(userData);
             yield usuario.save();
         }
-        else if (!usuario.estado) {
-            throw new RequestError_1.default(401, "Este usuario está desactivado.");
-        }
+        else if (!usuario.estado)
+            throw RequestError_1.default(USER_DEACTIVATED);
         const token = yield json_web_tokens_1.generateJwt(usuario);
         return res.json({
             msg: "Has iniciado sesión con Google correctamente.",
@@ -70,10 +72,10 @@ const googleSignIn = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         });
     }
     catch (error) {
-        const { code, message } = error;
+        const { status = 400, message: msg } = error;
         console.log(error);
-        return res.status(code !== null && code !== void 0 ? code : 400).json({ msg: message });
+        return res.status(status).json({ msg });
     }
 });
-exports.googleSignIn = googleSignIn;
+exports.google = google;
 //# sourceMappingURL=auth.js.map

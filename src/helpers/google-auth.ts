@@ -1,5 +1,5 @@
 import { OAuth2Client } from "google-auth-library";
-import RequestError from "../models/RequestError";
+import RequestError from "../errors/RequestError";
 
 const CLIENT_ID = process.env.G_PKEY;
 
@@ -21,6 +21,6 @@ export const verifyGoogleCredentials = async (idToken: string) => {
 
     return userData;
   } catch (error) {
-    throw new RequestError(400, error.message);
+    throw RequestError([400, error.message]);
   }
 };

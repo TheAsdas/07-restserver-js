@@ -1,30 +1,35 @@
 import { Router } from "express";
-import { login, googleSignIn } from '../controller/auth';
+import { google } from "../controller/auth";
 import { check } from "express-validator";
 import { validate } from "../middlewares/field-validations";
+import { auth } from "../controller";
 
-const authRouter = Router();
+const router = Router();
 
-const login_middlewares = [
-  check("correo")
-    .isEmail()
-    .withMessage("El correo no fue provisto o es inválido."),
-  check("clave")
-    .not()
-    .isEmpty()
-    .withMessage("Tienes que proveer una contraseña válida."),
-  validate,
-];
+/**
+ * # Validación
+ */
+const v = {
+  login: [
+    check("correo")
+      .isEmail()
+      .withMessage("El correo no fue provisto o es inválido."),
+    check("clave")
+      .not()
+      .isEmpty()
+      .withMessage("Tienes que proveer una contraseña válida."),
+    validate,
+  ],
+  google: [
+    check("id_token")
+      .not()
+      .isEmpty()
+      .withMessage("Tienes que proveer el token de Google."),
+    validate,
+  ],
+};
 
-const google_middlewares = [
-  check("id_token")
-    .not()
-    .isEmpty()
-    .withMessage("Tienes que proveer el token de Google."),
-  validate,
-];
+router.post("/login", v.login, auth.login);
+router.post("/google", v.google, auth.google);
 
-authRouter.post("/login", login_middlewares, login);
-authRouter.post("/google", google_middlewares, googleSignIn);
-
-export default authRouter;
+export default router;

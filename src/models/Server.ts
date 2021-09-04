@@ -1,16 +1,16 @@
 import express from "express";
 import { Express } from "express-serve-static-core";
 import cors from "cors";
-import userRouter from "../routes/users";
+
 import { connectToDb } from "../database/config";
-import authRouter from '../routes/auth';
+import * as routes from "../routes";
 
 class Server {
   private static _app: Express;
   private static _port: string | undefined;
   private static readonly _routes = {
     user: "/api/usuarios",
-    auth: "/api/auth"
+    auth: "/api/auth",
   };
 
   /**
@@ -38,8 +38,9 @@ class Server {
   }
 
   private static routes() {
-    this._app.use(this._routes.auth, authRouter);
-    this._app.use(this._routes.user, userRouter);
+    this._app.use(this._routes.auth, routes.auth);
+    this._app.use(this._routes.user, routes.users);
+    this._app.use(this._routes.user, routes.categories);
 
     return this;
   }
