@@ -55,32 +55,34 @@ const put = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.put = put;
 const post = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { nombre, correo, clave, rol } = req.body;
-    const usuario = new Usuario_1.default({ nombre, correo, clave, rol });
-    usuario.clave = bcryptjs_1.hashSync(clave);
+    const hashedPass = bcryptjs_1.hashSync(clave);
+    const usuario = new Usuario_1.default({ nombre, correo, hashedPass, rol });
     try {
         yield usuario.save();
+        res
+            .status(201)
+            .json({ msg: "Hemos creado al usuario exitosamente.", usuario });
     }
     catch (error) {
-        res.status(400).json(error).send();
+        res.status(400).json(error);
         return;
     }
-    return res
-        .status(201)
-        .json({ msg: "Hemos creado al usuario exitosamente.", usuario });
 });
 exports.post = post;
 const delete_ = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const uid = req.header("uid");
-    const rol = req.header("rol");
     const requestingUser = req.user;
-    const deletedUser = yield Usuario_1.default.findByIdAndUpdate(id, { estado: false });
-    return res.json({
-        msg: "Hemos borrado el usuario correctamente.",
-        requestingUser,
-        deletedUser,
-        uid,
-    });
+    try {
+        const deletedUser = yield Usuario_1.default.findByIdAndUpdate(id, { estado: false });
+        res.json({
+            msg: "Hemos borrado el usuario correctamente.",
+            requestingUser,
+            deletedUser,
+        });
+    }
+    catch (error) {
+        res.status(400).json({ msg: error.message });
+    }
 });
 exports.delete_ = delete_;
 const patch = (req, res) => {

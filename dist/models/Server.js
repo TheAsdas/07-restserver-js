@@ -47,20 +47,16 @@ const init = (port) => {
         port: (_a = port === null || port === void 0 ? void 0 : port.toString()) !== null && _a !== void 0 ? _a : process.env.PORT,
         listen: () => listen(server),
     };
-    connectDb();
+    connectToDatabase();
     setMiddlewares(server);
     setRoutes(server);
     return server;
 };
-const connectDb = () => __awaiter(void 0, void 0, void 0, function* () {
-    yield config_1.connectToDb();
-});
+const connectToDatabase = () => __awaiter(void 0, void 0, void 0, function* () { return yield config_1.connect(); });
 const setRoutes = (server) => {
-    const { app } = server;
-    app.use(paths.auth, routes.auth);
-    app.use(paths.users, routes.users);
-    app.use(paths.users, routes.categories);
-    return this;
+    server.app.use(paths.auth, routes.auth);
+    server.app.use(paths.users, routes.users);
+    server.app.use(paths.users, routes.categories);
 };
 const setMiddlewares = (server) => {
     server.app.use(middlewares);

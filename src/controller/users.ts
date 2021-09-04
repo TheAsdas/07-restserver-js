@@ -39,38 +39,37 @@ export const put: RequestHandler = async (req, res) => {
 
 export const post: RequestHandler = async (req, res) => {
   const { nombre, correo, clave, rol } = req.body;
-  const usuario = new Usuario({ nombre, correo, clave, rol });
+  const hashedPass = hashSync(clave);
+  const usuario = new Usuario({ nombre, correo, hashedPass, rol });
 
-  //Encriptar la contraseña:
-  usuario.clave = hashSync(clave);
-
-  //Guardar en DB
   try {
     await usuario.save();
+
+    res
+      .status(201)
+      .json({ msg: "Hemos creado al usuario exitosamente.", usuario });
   } catch (error) {
-    res.status(400).json(error).send();
+    res.status(400).json(error);
     return;
   }
-  return res
-    .status(201)
-    .json({ msg: "Hemos creado al usuario exitosamente.", usuario });
 };
 
 export const delete_: RequestHandler = async (req, res) => {
   const { id } = req.params;
-  const uid = req.header("uid");
-  const rol = req.header("rol");
   ///@ts-ignore
   const requestingUser = req.user;
 
-  const deletedUser = await Usuario.findByIdAndUpdate(id, { estado: false });
+  try {
+    const deletedUser = await Usuario.findByIdAndUpdate(id, { estado: false });
 
-  return res.json({
-    msg: "Hemos borrado el usuario correctamente.",
-    requestingUser,
-    deletedUser,
-    uid,
-  });
+    res.json({
+      msg: "Hemos borrado el usuario correctamente.",
+      requestingUser,
+      deletedUser,
+    });
+  } catch (error) {
+    res.status(400).json({ msg: error.message });
+  }
 };
 
 export const patch: RequestHandler = (req, res) => {
