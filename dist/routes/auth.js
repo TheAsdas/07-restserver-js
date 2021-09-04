@@ -24,7 +24,7 @@ const v = {
         field_validations_1.validate,
     ],
 };
-router.post("/login", v.login, controller_1.auth.login);
+router.post("/login", controller_1.auth.login);
 router.post("/google", v.google, controller_1.auth.google);
 exports.default = router;
 //# sourceMappingURL=auth.js.map

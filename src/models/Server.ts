@@ -1,75 +1,68 @@
 import express from "express";
-import { Express } from "express-serve-static-core";
 import cors from "cors";
 
 import { connectToDb } from "../database/config";
 import * as routes from "../routes";
 
-class Server {
-  private static _app: Express;
-  private static _port: string | undefined;
-  private static readonly _routes = {
-    user: "/api/usuarios",
-    auth: "/api/auth",
+import { iServer } from "./models";
+
+const paths = {
+  users: "/api/usuarios",
+  auth: "/api/auth",
+};
+const middlewares = [express.static("dist/public"), express.json(), cors()];
+
+/**
+ * # Configurar el servidor
+ * Crea una instancia de servidor, la configura y la retorna.
+ */
+const init = (port?: number) => {
+  const server: iServer = {
+    app: express(),
+    port: port?.toString() ?? process.env.PORT,
+    listen: () => listen(server),
   };
+  connectDb();
+  setMiddlewares(server);
+  setRoutes(server);
 
-  /**
-   * # Configurar el servidor
-   * Crea y configura el servidor siguiendo estos pasos:
-   * 1. Crea la instancia de express.
-   * 1. Extrae el puerto desde el archivo de variables de entorno.
-   * 1. Se conecta a la base de datos.
-   * 1. Configura las rutas.
-   * 1. Configura los middlewares.
-   *
-   * @returns La instancia del servidor.
-   */
-  static async init() {
-    this._app = express();
-    this._port = process.env.PORT;
-    await (await this.connect()).middlewares().routes();
+  return server;
+};
 
-    return this;
-  }
+/**
+ * Conecta con la base de datos.
+ */
+const connectDb = async () => {
+  await connectToDb();
+};
 
-  private static async connect() {
-    await connectToDb();
-    return this;
-  }
+const setRoutes = (server: iServer) => {
+  const { app } = server;
+  app.use(paths.auth, routes.auth);
+  app.use(paths.users, routes.users);
+  app.use(paths.users, routes.categories);
 
-  private static routes() {
-    this._app.use(this._routes.auth, routes.auth);
-    this._app.use(this._routes.user, routes.users);
-    this._app.use(this._routes.user, routes.categories);
+  return this;
+};
 
-    return this;
-  }
+/**
+ * Configura los middlewares del servidor.
+ */
+const setMiddlewares = (server: iServer) => {
+  server.app.use(middlewares);
+};
 
-  /**
-   * # Middlewares
-   * Configura los middlewares del servidor.
-   *
-   * @returns La instancia del servidor.
-   */
-  private static middlewares() {
-    this._app.use(express.static("dist/public"), express.json(), cors());
+/**
+ * Comienza el sevidor en el puerto especificado en el archivo de variables de entorno.
+ */
+const listen = (server: iServer) => {
+  const { app, port } = server;
 
-    return this;
-  }
+  if (!port) throw Error("El puerto no fue especificado.");
 
-  /**
-   * # Escuchar en puerto
-   * Comienza el sevidor en el puerto especificado en el archivo de variables de entorno.
-   *
-   * @returns La instancia del sevidor.
-   */
-  static listen() {
-    this._app.listen(this._port, () => {
-      console.log("Servidor escuchando en el puerto", this._port);
-    });
+  app.listen(port, () => {
+    console.log("Servidor escuchando en el puerto", port);
+  });
+};
 
-    return this;
-  }
-}
-
-export default Server;
+export default init;

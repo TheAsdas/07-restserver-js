@@ -20,6 +20,7 @@ const RequestError_1 = __importDefault(require("../errors/RequestError"));
 const google_auth_1 = require("../helpers/google-auth");
 const authErrors_1 = __importDefault(require("../errors/authErrors"));
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req);
     const { correo, clave } = req.body;
     const usuario = yield Usuario_1.default.findOne({ correo, estado: true });
     try {

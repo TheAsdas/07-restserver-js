@@ -35,41 +35,43 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const config_1 = require("../database/config");
 const routes = __importStar(require("../routes"));
-class Server {
-    static init() {
-        return __awaiter(this, void 0, void 0, function* () {
-            this._app = express_1.default();
-            this._port = process.env.PORT;
-            yield (yield this.connect()).middlewares().routes();
-            return this;
-        });
-    }
-    static connect() {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield config_1.connectToDb();
-            return this;
-        });
-    }
-    static routes() {
-        this._app.use(this._routes.auth, routes.auth);
-        this._app.use(this._routes.user, routes.users);
-        this._app.use(this._routes.user, routes.categories);
-        return this;
-    }
-    static middlewares() {
-        this._app.use(express_1.default.static("dist/public"), express_1.default.json(), cors_1.default());
-        return this;
-    }
-    static listen() {
-        this._app.listen(this._port, () => {
-            console.log("Servidor escuchando en el puerto", this._port);
-        });
-        return this;
-    }
-}
-Server._routes = {
-    user: "/api/usuarios",
+const paths = {
+    users: "/api/usuarios",
     auth: "/api/auth",
 };
-exports.default = Server;
+const middlewares = [express_1.default.static("dist/public"), express_1.default.json(), cors_1.default()];
+const init = (port) => {
+    var _a;
+    const server = {
+        app: express_1.default(),
+        port: (_a = port === null || port === void 0 ? void 0 : port.toString()) !== null && _a !== void 0 ? _a : process.env.PORT,
+        listen: () => listen(server),
+    };
+    connectDb();
+    setMiddlewares(server);
+    setRoutes(server);
+    return server;
+};
+const connectDb = () => __awaiter(void 0, void 0, void 0, function* () {
+    yield config_1.connectToDb();
+});
+const setRoutes = (server) => {
+    const { app } = server;
+    app.use(paths.auth, routes.auth);
+    app.use(paths.users, routes.users);
+    app.use(paths.users, routes.categories);
+    return this;
+};
+const setMiddlewares = (server) => {
+    server.app.use(middlewares);
+};
+const listen = (server) => {
+    const { app, port } = server;
+    if (!port)
+        throw Error("El puerto no fue especificado.");
+    app.listen(port, () => {
+        console.log("Servidor escuchando en el puerto", port);
+    });
+};
+exports.default = init;
 //# sourceMappingURL=Server.js.map

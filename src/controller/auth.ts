@@ -4,9 +4,10 @@ import Usuario from "../models/Usuario";
 import { generateJwt } from "../helpers/json-web-tokens";
 import RequestError from "../errors/RequestError";
 import { verifyGoogleCredentials } from "../helpers/google-auth";
-import authErrors  from "../errors/authErrors";
+import authErrors from "../errors/authErrors";
 
 export const login: RequestHandler = async (req, res) => {
+  console.log(req);
   const { correo, clave } = req.body;
   const usuario = await Usuario.findOne({ correo, estado: true });
 

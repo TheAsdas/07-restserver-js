@@ -8,7 +8,7 @@ dotenv.config();
 const main = async () => {
   console.clear();
 
-  const server = await Server.init();
+  const server = Server();
   server.listen();
   
 };

@@ -29,7 +29,7 @@ const v = {
   ],
 };
 
-router.post("/login", v.login, auth.login);
+router.post("/login",  auth.login);
 router.post("/google", v.google, auth.google);
 
 export default router;

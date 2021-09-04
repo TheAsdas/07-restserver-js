@@ -18,7 +18,7 @@ const Server_1 = __importDefault(require("./models/Server"));
 dotenv_1.default.config();
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     console.clear();
-    const server = yield Server_1.default.init();
+    const server = Server_1.default();
     server.listen();
 });
 main();
