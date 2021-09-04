@@ -1,34 +1,41 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import Usuario from "../models/Usuario";
 import { Middleware } from "./middlewares";
+import RequestError from "../errors/RequestError";
+import authErrors from "../errors/authErrors";
+import { iRequestError } from "../errors/errors";
 
 export const validateJwt: Middleware = async (req, res, next) => {
-  const token = req.header("x-token");
+	try {
+		const { JWT_NOT_FOUND, SKEY_NOT_FOUND, USER_DEACTIVATED } = authErrors;
+		const token = req.header("x-token");
+		const key = process.env.SKEY;
+		let uid;
 
-  if (!token)
-    return res
-      .status(401)
-      .json({ msg: "El token de autorización no fue enviado." });
+		if (!token) throw RequestError(JWT_NOT_FOUND);
+		else if (!key) throw RequestError(SKEY_NOT_FOUND);
 
-  try {
-    const key = process.env.SKEY;
-    if (key) {
-      const { uid } = jwt.verify(token, key) as JwtPayload;
-      const user = await Usuario.findOne({ _id: uid, estado: true });
+		try {
+			let payload = jwt.verify(token, key) as JwtPayload;
+			uid = payload.uid;
+			//uid = _uid;
+		} catch (error) {
+			const { message } = error as Error;
+			throw RequestError([400, message]);
+		}
 
-      console.log(user);
+		const user = await Usuario.findOne({ _id: uid, estado: true });
 
-      if (!user) throw new Error("Los muertos no pueden votar.");
-      req.headers["uid"] = uid;
-      ///@ts-ignore
-      req.user = user;
-    } else
-      return res.status(500).json({
-        msg: "La SKEY no está definida en las variables de entorno.",
-      });
-    next();
-  } catch (error) {
-    console.log(error);
-    return res.status(401).json({ msg: error.message });
-  }
+		if (!user) throw RequestError(USER_DEACTIVATED);
+
+		req.headers["uid"] = uid;
+		///@ts-ignore
+		req.user = user;
+		next();
+	} catch (error) {
+		const { message, status = 500 } = error as iRequestError;
+
+		console.log(error);
+		return res.status(status).json({ msg: message });
+	}
 };

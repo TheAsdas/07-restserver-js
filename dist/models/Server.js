@@ -39,11 +39,11 @@ const paths = {
     users: "/api/usuarios",
     auth: "/api/auth",
 };
-const middlewares = [express_1.default.static("dist/public"), express_1.default.json(), cors_1.default()];
+const middlewares = [express_1.default.static("dist/public"), express_1.default.json(), (0, cors_1.default)()];
 const init = (port) => {
     var _a;
     const server = {
-        app: express_1.default(),
+        app: (0, express_1.default)(),
         port: (_a = port === null || port === void 0 ? void 0 : port.toString()) !== null && _a !== void 0 ? _a : process.env.PORT,
         listen: () => listen(server),
     };
@@ -52,7 +52,7 @@ const init = (port) => {
     setRoutes(server);
     return server;
 };
-const connectToDatabase = () => __awaiter(void 0, void 0, void 0, function* () { return yield config_1.connect(); });
+const connectToDatabase = () => __awaiter(void 0, void 0, void 0, function* () { return yield (0, config_1.connect)(); });
 const setRoutes = (server) => {
     server.app.use(paths.auth, routes.auth);
     server.app.use(paths.users, routes.users);

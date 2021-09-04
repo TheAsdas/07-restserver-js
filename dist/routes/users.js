@@ -5,29 +5,29 @@ const express_validator_1 = require("express-validator");
 const middlewares_1 = require("../middlewares");
 const controller_1 = require("../controller");
 const db_validator_1 = require("../helpers/db-validator");
-const router = express_1.Router();
+const router = (0, express_1.Router)();
 const v = {
     post: [
-        express_validator_1.check("nombre", "El nombre es obligatorio y no puede estar vacío.")
+        (0, express_validator_1.check)("nombre", "El nombre es obligatorio y no puede estar vacío.")
             .not()
             .isEmpty(),
-        express_validator_1.check("clave", "La contraseña es obligatoria y debe tener más de 6 caracteres.").isLength({ min: 6 }),
-        express_validator_1.check("rol").custom(db_validator_1.validateRole),
-        express_validator_1.check("correo", "El correo no es válido.").isEmail().custom(db_validator_1.userIsUnique),
+        (0, express_validator_1.check)("clave", "La contraseña es obligatoria y debe tener más de 6 caracteres.").isLength({ min: 6 }),
+        (0, express_validator_1.check)("rol").custom(db_validator_1.validateRole),
+        (0, express_validator_1.check)("correo", "El correo no es válido.").isEmail().custom(db_validator_1.userIsUnique),
         middlewares_1.validate,
     ],
     put: [
-        express_validator_1.check("id")
+        (0, express_validator_1.check)("id")
             .isMongoId()
             .withMessage("La ID no es válida.")
             .custom(db_validator_1.userIdIsValid),
-        express_validator_1.check("rol").custom(db_validator_1.validateRole),
+        (0, express_validator_1.check)("rol").custom(db_validator_1.validateRole),
         middlewares_1.validate,
     ],
     delete: [
         middlewares_1.validateJwt,
-        middlewares_1.userHasRoles("ADMIN"),
-        express_validator_1.check("id")
+        (0, middlewares_1.userHasRoles)("ADMIN"),
+        (0, express_validator_1.check)("id")
             .isMongoId()
             .withMessage("La ID no es válida.")
             .custom(db_validator_1.userIdIsValid),

@@ -26,12 +26,12 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { USER_NOT_REGISTERED, USER_USED_GOOGLE, INCORRECT_PASSWORD } = authErrors_1.default;
         if (!usuario)
-            throw RequestError_1.default(USER_NOT_REGISTERED);
+            throw (0, RequestError_1.default)(USER_NOT_REGISTERED);
         if (usuario.google)
-            throw RequestError_1.default(USER_USED_GOOGLE);
-        if (!bcryptjs_1.compareSync(clave, usuario.clave))
-            throw RequestError_1.default(INCORRECT_PASSWORD);
-        const token = yield json_web_tokens_1.generateJwt(usuario);
+            throw (0, RequestError_1.default)(USER_USED_GOOGLE);
+        if (!(0, bcryptjs_1.compareSync)(clave, usuario.clave))
+            throw (0, RequestError_1.default)(INCORRECT_PASSWORD);
+        const token = yield (0, json_web_tokens_1.generateJwt)(usuario);
         return res.json({
             msg: "Andy's log are here.",
             usuario,
@@ -39,16 +39,16 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     catch (error) {
-        const { status, message } = error;
+        const { status = 400, message } = error;
         console.log(error);
-        return res.status(status !== null && status !== void 0 ? status : 400).json({ msg: message });
+        return res.status(status).json({ msg: message });
     }
 });
 exports.login = login;
 const google = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id_token } = req.body;
     try {
-        const { nombre, img, correo } = yield google_auth_1.verifyGoogleCredentials(id_token);
+        const { nombre, img, correo } = yield (0, google_auth_1.verifyGoogleCredentials)(id_token);
         const { USER_DEACTIVATED } = authErrors_1.default;
         let usuario = yield Usuario_1.default.findOne({ correo });
         if (!usuario) {
@@ -64,8 +64,8 @@ const google = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             yield usuario.save();
         }
         else if (!usuario.estado)
-            throw RequestError_1.default(USER_DEACTIVATED);
-        const token = yield json_web_tokens_1.generateJwt(usuario);
+            throw (0, RequestError_1.default)(USER_DEACTIVATED);
+        const token = yield (0, json_web_tokens_1.generateJwt)(usuario);
         return res.json({
             msg: "Has iniciado sesión con Google correctamente.",
             user: usuario,

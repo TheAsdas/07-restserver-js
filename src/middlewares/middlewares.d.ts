@@ -1,7 +1,3 @@
-import { Request, Response } from 'express';
+import { Request, Response } from "express";
 
-export type Middleware = (
-  req: Request,
-  res: Response,
-  next: Function
-) => any;
+export type Middleware = (req: Request, res: Response, next: Function) => any;

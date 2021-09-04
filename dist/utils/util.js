@@ -6,7 +6,7 @@ const fullFreeze = (obj) => {
         const current = obj[key];
         const objects = hasAnyObjects(current);
         if (objects)
-            objects.forEach((obj) => exports.fullFreeze(obj));
+            objects.forEach((obj) => (0, exports.fullFreeze)(obj));
     });
     Object.freeze(obj);
 };

@@ -6,14 +6,14 @@ type KeyVal = { [key: string]: any };
  * @param obj Objeto a congelar.
  */
 export const fullFreeze = (obj: KeyVal) => {
-  Object.keys(obj).forEach((key) => {
-    const current = obj[key];
-    const objects = hasAnyObjects(current);
+	Object.keys(obj).forEach((key) => {
+		const current = obj[key];
+		const objects = hasAnyObjects(current);
 
-    if (objects) objects.forEach((obj) => fullFreeze(obj));
-  });
+		if (objects) objects.forEach((obj) => fullFreeze(obj));
+	});
 
-  Object.freeze(obj);
+	Object.freeze(obj);
 };
 
 /**
@@ -24,12 +24,12 @@ export const fullFreeze = (obj: KeyVal) => {
  * @returns `KeyVal[]`, Si el objeto contiene uno o más objetos, retorna un arreglo con estos objetos.
  */
 const hasAnyObjects = (obj: KeyVal): false | KeyVal[] => {
-  const foundObjects: KeyVal[] = [];
+	const foundObjects: KeyVal[] = [];
 
-  Object.keys(obj).forEach((key) => {
-    const current = obj[key];
-    typeof current === "object" && foundObjects.push(current);
-  });
+	Object.keys(obj).forEach((key) => {
+		const current = obj[key];
+		typeof current === "object" && foundObjects.push(current);
+	});
 
-  return foundObjects.length === 0 ? false : foundObjects;
+	return foundObjects.length === 0 ? false : foundObjects;
 };

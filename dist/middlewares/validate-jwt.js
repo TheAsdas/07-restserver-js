@@ -15,32 +15,37 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.validateJwt = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const Usuario_1 = __importDefault(require("../models/Usuario"));
+const RequestError_1 = __importDefault(require("../errors/RequestError"));
+const authErrors_1 = __importDefault(require("../errors/authErrors"));
 const validateJwt = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const token = req.header("x-token");
-    if (!token)
-        return res
-            .status(401)
-            .json({ msg: "El token de autorización no fue enviado." });
     try {
+        const { JWT_NOT_FOUND, SKEY_NOT_FOUND, USER_DEACTIVATED } = authErrors_1.default;
+        const token = req.header("x-token");
         const key = process.env.SKEY;
-        if (key) {
-            const { uid } = jsonwebtoken_1.default.verify(token, key);
-            const user = yield Usuario_1.default.findOne({ _id: uid, estado: true });
-            console.log(user);
-            if (!user)
-                throw new Error("Los muertos no pueden votar.");
-            req.headers["uid"] = uid;
-            req.user = user;
+        let uid;
+        if (!token)
+            throw (0, RequestError_1.default)(JWT_NOT_FOUND);
+        else if (!key)
+            throw (0, RequestError_1.default)(SKEY_NOT_FOUND);
+        try {
+            let payload = jsonwebtoken_1.default.verify(token, key);
+            uid = payload.uid;
         }
-        else
-            return res.status(500).json({
-                msg: "La SKEY no está definida en las variables de entorno.",
-            });
+        catch (error) {
+            const { message } = error;
+            throw (0, RequestError_1.default)([400, message]);
+        }
+        const user = yield Usuario_1.default.findOne({ _id: uid, estado: true });
+        if (!user)
+            throw (0, RequestError_1.default)(USER_DEACTIVATED);
+        req.headers["uid"] = uid;
+        req.user = user;
         next();
     }
     catch (error) {
+        const { message, status = 500 } = error;
         console.log(error);
-        return res.status(401).json({ msg: error.message });
+        return res.status(status).json({ msg: message });
     }
 });
 exports.validateJwt = validateJwt;

@@ -18,7 +18,6 @@ exports.userIsAdmin = userIsAdmin;
 const userHasRoles = (...validRoles) => {
     return (req, res, next) => {
         const userRole = req.user.rol;
-        console.log(userRole);
         if (!validRoles.includes(userRole))
             return res.status(401).json({
                 msg: `El usuario tiene el rol ${userRole}, y no tiene permisos. Roles con permisiones: ${validRoles.join(", ")}.`,
