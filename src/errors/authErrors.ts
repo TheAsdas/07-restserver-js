@@ -1,4 +1,4 @@
-import { ReqErr } from "./errors";
+import { ReqErr } from "./.d";
 
 const authErrors = {
 	INCORRECT_PASSWORD: [401, "Tu contraseña es incorrecta."] as ReqErr,

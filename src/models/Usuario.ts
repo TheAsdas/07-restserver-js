@@ -1,15 +1,5 @@
 import { model, Schema } from "mongoose";
-
-export interface iUsuario {
-  nombre: string;
-  correo: string;
-  clave: string;
-  img?: string;
-  rol: string;
-  estado: boolean;
-  google: boolean;
-  _id: string;
-}
+import { iUser } from './.d';
 
 const schema = new Schema({
   nombre: {
@@ -48,4 +38,4 @@ schema.methods.toJSON = function () {
   return user;
 };
 
-export default model<iUsuario>("Usuario", schema);
+export default model<iUser>("Usuario", schema);

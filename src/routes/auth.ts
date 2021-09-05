@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { google } from "../controller/auth";
 import { check } from "express-validator";
 import { validate } from "../middlewares/field-validations";
 import { auth } from "../controller";

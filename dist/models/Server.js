@@ -36,8 +36,9 @@ const cors_1 = __importDefault(require("cors"));
 const config_1 = require("../database/config");
 const routes = __importStar(require("../routes"));
 const paths = {
-    users: "/api/usuarios",
     auth: "/api/auth",
+    category: "/api/categorias",
+    user: "/api/usuarios",
 };
 const middlewares = [express_1.default.static("dist/public"), express_1.default.json(), (0, cors_1.default)()];
 const init = (port) => {
@@ -54,9 +55,15 @@ const init = (port) => {
 };
 const connectToDatabase = () => __awaiter(void 0, void 0, void 0, function* () { return yield (0, config_1.connect)(); });
 const setRoutes = (server) => {
-    server.app.use(paths.auth, routes.auth);
-    server.app.use(paths.users, routes.users);
-    server.app.use(paths.users, routes.categories);
+    Object.keys(paths).forEach((key) => {
+        let router = routes[key];
+        if (!router)
+            throw Error('El router para la ruta " ' +
+                key +
+                '" no se encontró en el index de rutas. ' +
+                "Recuerda que el nombre de la ruta y el router deben ser iguales.");
+        server.app.use(paths[key], router);
+    });
 };
 const setMiddlewares = (server) => {
     server.app.use(middlewares);

@@ -1,11 +1,11 @@
 import { validationResult } from "express-validator";
-import { Middleware } from "./middlewares";
+import { iMiddleware } from './.d';
 
-export const validate: Middleware = (req, res, next) => {
-  const errores = validationResult(req);
-  if (!errores.isEmpty()) {
-    return res.status(400).json(errores);
-  }
+export const validate: iMiddleware = (req, res, next) => {
+	const errores = validationResult(req);
+	if (!errores.isEmpty()) {
+		return res.status(400).json(errores);
+	}
 
-  next();
+	next();
 };

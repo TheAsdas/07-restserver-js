@@ -5,7 +5,7 @@ import { generateJwt } from "../helpers/json-web-tokens";
 import RequestError from "../errors/RequestError";
 import { verifyGoogleCredentials } from "../helpers/google-auth";
 import authErrors from "../errors/authErrors";
-import { iRequestError } from "../errors/errors";
+import { iRequestError } from "../errors/.d";
 
 export const login: RequestHandler = async (req, res) => {
 	console.log(req);

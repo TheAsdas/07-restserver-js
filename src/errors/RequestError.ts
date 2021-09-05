@@ -1,5 +1,5 @@
-import { ReqErr } from "./errors.d";
-import { iRequestError } from "./errors.d";
+import { ReqErr } from "./.d";
+import { iRequestError } from "./.d";
 
 /**
  * Crea un error que se puede lanzar cuando algo sale mal en una petición HTTP.

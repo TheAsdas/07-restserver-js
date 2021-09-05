@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
-import Server from "./models/Server";
+import { Server } from "./models";
+
 
 export var _LANG: any;
 

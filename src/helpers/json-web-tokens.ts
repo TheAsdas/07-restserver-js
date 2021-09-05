@@ -1,11 +1,10 @@
-import { rejects } from "assert";
 import { sign } from "jsonwebtoken";
-import { iUsuario } from "../models/Usuario";
+import { iUser } from '../models/.d';
 
 export const generateJwt = ({
   _id,
   rol,
-}: iUsuario): Promise<string | undefined> => {
+}: iUser): Promise<string | undefined> => {
   return new Promise((res, rej) => {
     const payload = { uid: _id, rol };
     const key = process.env.SKEY;

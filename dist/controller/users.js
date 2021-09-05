@@ -56,7 +56,7 @@ exports.put = put;
 const post = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { nombre, correo, clave, rol } = req.body;
     const hashedPass = (0, bcryptjs_1.hashSync)(clave);
-    const usuario = new Usuario_1.default({ nombre, correo, hashedPass, rol });
+    const usuario = new Usuario_1.default({ nombre, correo, clave: hashedPass, rol });
     try {
         yield usuario.save();
         res

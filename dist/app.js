@@ -14,11 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports._LANG = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
-const Server_1 = __importDefault(require("./models/Server"));
+const models_1 = require("./models");
 dotenv_1.default.config();
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     console.clear();
-    const server = (0, Server_1.default)();
+    const server = (0, models_1.Server)();
     server.listen();
 });
 main();

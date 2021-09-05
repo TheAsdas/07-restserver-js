@@ -1,11 +1,11 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
-import Usuario from "../models/Usuario";
-import { Middleware } from "./middlewares";
 import RequestError from "../errors/RequestError";
 import authErrors from "../errors/authErrors";
-import { iRequestError } from "../errors/errors";
+import { iRequestError } from "../errors/.d";
+import { User } from "../models";
+import { iMiddleware } from "./.d";
 
-export const validateJwt: Middleware = async (req, res, next) => {
+export const validateJwt: iMiddleware = async (req, res, next) => {
 	try {
 		const { JWT_NOT_FOUND, SKEY_NOT_FOUND, USER_DEACTIVATED } = authErrors;
 		const token = req.header("x-token");
@@ -24,7 +24,7 @@ export const validateJwt: Middleware = async (req, res, next) => {
 			throw RequestError([400, message]);
 		}
 
-		const user = await Usuario.findOne({ _id: uid, estado: true });
+		const user = await User.findOne({ _id: uid, estado: true });
 
 		if (!user) throw RequestError(USER_DEACTIVATED);
 

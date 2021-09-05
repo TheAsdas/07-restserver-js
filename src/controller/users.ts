@@ -40,7 +40,7 @@ export const put: RequestHandler = async (req, res) => {
 export const post: RequestHandler = async (req, res) => {
 	const { nombre, correo, clave, rol } = req.body;
 	const hashedPass = hashSync(clave);
-	const usuario = new Usuario({ nombre, correo, hashedPass, rol });
+	const usuario = new Usuario({ nombre, correo, clave: hashedPass, rol });
 
 	try {
 		await usuario.save();
