@@ -16,10 +16,10 @@ const schema = new mongoose_1.Schema({
     name: { type: String, required: true, unique: true },
     state: { type: Boolean, default: true },
     createdBy: { type: mongoose_1.Schema.Types.ObjectId, ref: "Usuario", required: true },
+    editedBy: { type: mongoose_1.Schema.Types.ObjectId, ref: "Usuario" }
 });
 schema.methods.toJSON = function () {
-    const _a = this.toObject(), { __v, _id } = _a, rest = __rest(_a, ["__v", "_id"]);
-    rest.id = _id;
+    const _a = this.toObject(), { __v, state } = _a, rest = __rest(_a, ["__v", "state"]);
     return rest;
 };
 const Category = (0, mongoose_1.model)("Category", schema);

@@ -27,7 +27,7 @@ const userIdIsValid = (id) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.userIdIsValid = userIdIsValid;
 const categoryExists = (_id) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!(yield models_1.Category.exists({ _id })))
+    if (!(yield models_1.Category.exists({ _id, state: true })))
         throw Error(`La categoría con ID ${_id} no existe.`);
 });
 exports.categoryExists = categoryExists;

@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.edit = exports.remove = exports.getMany = exports.getOne = exports.create = void 0;
 const errors_1 = require("../errors");
 const models_1 = require("../models");
-const util_1 = require("../utils/util");
+const util_1 = require("../helpers/util");
 const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log(req.body);
@@ -39,7 +39,7 @@ exports.create = create;
 const getOne = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        const category = yield models_1.Category.findOne({ _id: id, state: true }).populate("createdBy");
+        const category = yield models_1.Category.findOne({ _id: id, state: true }).populate("createdBy", "nombre");
         res.json({ category });
     }
     catch (error) {
@@ -60,7 +60,7 @@ const getMany = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             models_1.Category.find(query)
                 .skip(+offset)
                 .limit(+limit)
-                .populate("createdBy"),
+                .populate("createdBy", "nombre"),
         ]);
         const { next, last } = (0, util_1.calculateNextAndLastUrl)({
             offset: +offset,
@@ -80,16 +80,14 @@ const remove = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
         const category = yield models_1.Category.findOne({ _id: id, state: true });
-        const { DOES_NOT_EXIST } = errors_1.queryErrors;
-        if (!category)
-            throw (0, errors_1.RequestError)(DOES_NOT_EXIST);
         category.state = false;
         category.save();
         res.json({ msg: "Borramos la categoría satisfactoriamente.", category });
     }
     catch (error) {
-        const { message: msg, status: code } = error;
-        res.status(code).json({ msg });
+        console.error(error);
+        const { message, status = 500 } = error;
+        res.status(status).json({ msg: message });
     }
 });
 exports.remove = remove;
@@ -97,14 +95,12 @@ const edit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
         const { name } = req.body;
-        const { DOES_NOT_EXIST } = errors_1.queryErrors;
         const category = yield models_1.Category.findOne({
             _id: id,
             state: true,
         });
-        if (!category)
-            throw (0, errors_1.RequestError)(DOES_NOT_EXIST);
-        category.name = name;
+        category.name = name.toUpperCase();
+        category.editedBy = req.user._id;
         yield category.save();
         res.json({
             msg: "Modificamos la categoría exitosamente.",

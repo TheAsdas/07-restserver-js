@@ -1,12 +1,12 @@
 import { RequestHandler } from "express";
 import { queryErrors, RequestError } from "../errors";
-import { Category, User } from "../models";
+import { Category } from "../models";
 import { iRequestError } from "../errors/.d";
 import {
 	fullUrl,
 	calculateNextAndLastUrl,
 	normalizePagination,
-} from "../utils/util";
+} from "../helpers/util";
 
 export const create: RequestHandler = async (req, res) => {
 	try {
@@ -41,9 +41,9 @@ export const getOne: RequestHandler = async (req, res) => {
 	try {
 		const { id } = req.params;
 		const category = await Category.findOne({ _id: id, state: true }).populate(
-			"createdBy"
+			"createdBy",
+			"nombre"
 		);
-		//await User.populate(category, "createdBy");
 
 		res.json({ category });
 	} catch (error) {
@@ -66,7 +66,7 @@ export const getMany: RequestHandler = async (req, res) => {
 			Category.find(query)
 				.skip(+offset)
 				.limit(+limit)
-				.populate("createdBy"),
+				.populate("createdBy", "nombre"),
 		]);
 
 		const { next, last } = calculateNextAndLastUrl({
@@ -87,17 +87,15 @@ export const remove: RequestHandler = async (req, res) => {
 	try {
 		const { id } = req.params;
 		const category = await Category.findOne({ _id: id, state: true });
-		const { DOES_NOT_EXIST } = queryErrors;
 
-		if (!category) throw RequestError(DOES_NOT_EXIST);
-
-		category.state = false;
-		category.save();
+		category!.state = false;
+		category!.save();
 
 		res.json({ msg: "Borramos la categoría satisfactoriamente.", category });
 	} catch (error) {
-		const { message: msg, status: code } = error as iRequestError;
-		res.status(code).json({ msg });
+		console.error(error);
+		const { message, status = 500 } = error as iRequestError;
+		res.status(status).json({ msg: message });
 	}
 };
 
@@ -105,16 +103,14 @@ export const edit: RequestHandler = async (req, res) => {
 	try {
 		const { id } = req.params;
 		const { name } = req.body;
-		const { DOES_NOT_EXIST } = queryErrors;
 		const category = await Category.findOne({
 			_id: id as string,
 			state: true,
 		});
 
-		if (!category) throw RequestError(DOES_NOT_EXIST);
-
-		category.name = name;
-		await category.save();
+		category!.name = name.toUpperCase();
+		category!.editedBy = (req as any).user._id;
+		await category!.save();
 
 		res.json({
 			msg: "Modificamos la categoría exitosamente.",

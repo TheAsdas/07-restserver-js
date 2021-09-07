@@ -1,28 +1,38 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userHasRoles = exports.userIsAdmin = void 0;
+const errors_1 = require("../errors");
 const userIsAdmin = (req, res, next) => {
-    const usuario = req.user;
-    if (!usuario)
-        return res
-            .status(500)
-            .json({ msg: "El usuario no está definido en el Request." });
-    const { rol, nombre } = usuario;
-    if (rol !== "ADMIN")
-        return res
-            .status(401)
-            .json({ msg: `${nombre} no tiene permisos de ADMIN.` });
-    next();
+    try {
+        const userRole = req.user.rol;
+        const { USER_NOT_DEFINED, NO_PRIVILEGES } = errors_1.authErrors;
+        if (!userRole)
+            throw (0, errors_1.RequestError)(USER_NOT_DEFINED);
+        if (userRole !== "ADMIN")
+            throw (0, errors_1.RequestError)(NO_PRIVILEGES);
+        next();
+    }
+    catch (error) {
+        const { status = 500, message } = error;
+        res.status(status).json({ msg: message });
+    }
 };
 exports.userIsAdmin = userIsAdmin;
 const userHasRoles = (...validRoles) => {
     return (req, res, next) => {
-        const userRole = req.user.rol;
-        if (!validRoles.includes(userRole))
-            return res.status(401).json({
-                msg: `El usuario tiene el rol ${userRole}, y no tiene permisos. Roles con permisiones: ${validRoles.join(", ")}.`,
-            });
-        next();
+        try {
+            const userRole = req.user.rol;
+            const { USER_NOT_DEFINED, NO_PRIVILEGES } = errors_1.authErrors;
+            if (!userRole)
+                throw (0, errors_1.RequestError)(USER_NOT_DEFINED);
+            if (!validRoles.includes(userRole))
+                throw (0, errors_1.RequestError)(NO_PRIVILEGES);
+            next();
+        }
+        catch (error) {
+            const { status = 500, message } = error;
+            res.status(status).json({ msg: message });
+        }
     };
 };
 exports.userHasRoles = userHasRoles;

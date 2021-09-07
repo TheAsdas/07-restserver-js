@@ -33,6 +33,7 @@ const validate = {
     ],
     delete: [
         middlewares_1.validateJwt,
+        middlewares_1.userIsAdmin,
         (0, express_validator_1.check)("id")
             .isMongoId()
             .withMessage("La ID es inválida.")

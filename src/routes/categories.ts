@@ -2,7 +2,7 @@ import { Router } from "express";
 import { check } from "express-validator";
 import { category } from "../controller";
 import { categoryExists, categoryNameIsTaken } from "../helpers/db-validator";
-import { validateJwt, validateRequestFields } from "../middlewares";
+import { userIsAdmin, validateJwt, validateRequestFields } from "../middlewares";
 
 /**
  * # Router de categorías
@@ -14,7 +14,7 @@ import { validateJwt, validateRequestFields } from "../middlewares";
  * |`"/:id":get` | `<Public>` | Mostrar una categoría. |
  * |`"/":post` | `<Private>` | Crear una categoría. |
  * |`"/:id":put` | `<Private>` | Modificar una categoría. |
- * |`"/:id":delete` | `<Private>` | Borrar una categoría. |
+ * |`"/:id":delete` | `<Private=ADMIN>` | Borrar una categoría. |
  */
 const router = Router();
 
@@ -45,6 +45,7 @@ const validate = {
 	],
 	delete: [
 		validateJwt,
+		userIsAdmin,
 		check("id")
 			.isMongoId()
 			.withMessage("La ID es inválida.")

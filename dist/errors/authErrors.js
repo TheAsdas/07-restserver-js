@@ -10,6 +10,14 @@ const authErrors = {
         500,
         "La SKEY no está definida en las variables de entorno.",
     ],
+    NO_PRIVILEGES: [
+        401,
+        "No tienes los privilegios requeridos para realizar esta acción.",
+    ],
+    USER_NOT_DEFINED: [
+        500,
+        "El usuario no está definido en el Request. Recuerda que debes verificar el JWT antes que nada.",
+    ],
 };
 exports.default = authErrors;
 //# sourceMappingURL=authErrors.js.map

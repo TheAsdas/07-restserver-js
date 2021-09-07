@@ -1,38 +1,45 @@
+import { authErrors, RequestError } from "../errors";
+import { iRequestError } from "../errors/.d";
 import { iMiddleware } from "./.d";
 
+/**
+ * Chequea que el usuario que hace la petición tiene el rol de administrador.
+ * @param req Request
+ * @param res Response
+ * @param next Función que avanza al próximo Middleware.
+ */
 export const userIsAdmin: iMiddleware = (req, res, next) => {
-	///@ts-ignore
-	const usuario: iUsuario = req.user;
-	if (!usuario)
-		return res
-			.status(500)
-			.json({ msg: "El usuario no está definido en el Request." });
+	try {
+		const userRole: string = (req as any).user.rol;
+		const { USER_NOT_DEFINED, NO_PRIVILEGES } = authErrors;
 
-	const { rol, nombre } = usuario;
-	if (rol !== "ADMIN")
-		return res
-			.status(401)
-			.json({ msg: `${nombre} no tiene permisos de ADMIN.` });
-	next();
+		if (!userRole) throw RequestError(USER_NOT_DEFINED);
+		if (userRole !== "ADMIN") throw RequestError(NO_PRIVILEGES);
+
+		next();
+	} catch (error) {
+		const { status = 500, message } = error as iRequestError;
+		res.status(status).json({ msg: message });
+	}
 };
 
 /**
- *
+ * Chequea que el rol del usuario esté dentro de la lista de roles provistos.
  * @param validRoles Arreglo con los roles válidos que acepta la petición.
- * @returns Middleware
  */
 export const userHasRoles = (...validRoles: string[]): iMiddleware => {
 	return (req, res, next) => {
-		///@ts-ignore
-		const userRole = req.user.rol;
+		try {
+			const userRole: string = (req as any).user.rol;
+			const { USER_NOT_DEFINED, NO_PRIVILEGES } = authErrors;
 
-		if (!validRoles.includes(userRole))
-			return res.status(401).json({
-				msg: `El usuario tiene el rol ${userRole}, y no tiene permisos. Roles con permisiones: ${validRoles.join(
-					", "
-				)}.`,
-			});
+			if (!userRole) throw RequestError(USER_NOT_DEFINED);
+			if (!validRoles.includes(userRole)) throw RequestError(NO_PRIVILEGES);
 
-		next();
+			next();
+		} catch (error) {
+			const { status = 500, message } = error as iRequestError;
+			res.status(status).json({ msg: message });
+		}
 	};
 };

@@ -49,8 +49,8 @@ export interface iRole {
 export interface iCategory {
 	name: string;
 	state: boolean;
-	createdBy: iUser|string;
-	uid ?: string;
-	_id?: string;
-	__v: number;
+	createdBy: iUser | string;
+	editedBy: iUser | string;
+	_id: string;
+	__v?: number;
 }

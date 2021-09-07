@@ -18,7 +18,7 @@ export const userIdIsValid = async (id: string) => {
 };
 
 export const categoryExists = async (_id: string) => {
-	if (!(await Category.exists({ _id })))
+	if (!(await Category.exists({ _id, state: true })))
 		throw Error(`La categoría con ID ${_id} no existe.`);
 };
 
