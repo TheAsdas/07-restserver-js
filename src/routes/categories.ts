@@ -1,4 +1,8 @@
 import { Router } from "express";
+import { check } from "express-validator";
+import { category } from "../controller";
+import { categoryExists, categoryNameIsTaken } from "../helpers/db-validator";
+import { validateJwt, validateRequestFields } from "../middlewares";
 
 /**
  * # Router de categorías
@@ -14,26 +18,52 @@ import { Router } from "express";
  */
 const router = Router();
 
-router.get("/", (req, res) => {
-	res.json({ msg: "get" });
-});
-router.get("/:id", (req, res) => {
-	res.json({ msg: "get id" });
-});
+const validate = {
+	post: [
+		validateJwt,
+		check("name", "El nombre es obligatorio.").not().isEmpty(),
+		validateRequestFields,
+	],
+	getOne: [
+		check("id")
+			.isMongoId()
+			.withMessage("La ID es inválida.")
+			.custom(categoryExists),
+		validateRequestFields,
+	],
+	put: [
+		validateJwt,
+		check("id")
+			.isMongoId()
+			.withMessage("La ID es inválida.")
+			.custom(categoryExists),
+		check("name")
+			.notEmpty()
+			.withMessage("El nombre es obligatorio.")
+			.custom(categoryNameIsTaken),
+		validateRequestFields,
+	],
+	delete: [
+		validateJwt,
+		check("id")
+			.isMongoId()
+			.withMessage("La ID es inválida.")
+			.custom(categoryExists),
+		validateRequestFields,
+	],
+};
+
+router.get("/", category.getMany);
+
+router.get("/:id", validate.getOne, category.getOne);
 
 /* Privado: solo con JWT */
-router.post("/", (req, res) => {
-	res.json({ msg: "post" });
-});
+router.post("/", validate.post, category.create);
 
 /* Privado: solo con JWT */
-router.put("/:id", (req, res) => {
-	res.json({ msg: "put" });
-});
+router.put("/:id", validate.put, category.edit);
 
 /* Privado: solo con JWT */
-router.delete("/:id", (req, res) => {
-	res.json({ msg: "delete" });
-});
+router.delete("/:id", validate.delete, category.remove);
 
 export default router;

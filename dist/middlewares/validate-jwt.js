@@ -28,7 +28,7 @@ const validateJwt = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         else if (!key)
             throw (0, RequestError_1.default)(SKEY_NOT_FOUND);
         try {
-            let payload = jsonwebtoken_1.default.verify(token, key);
+            const payload = jsonwebtoken_1.default.verify(token, key);
             uid = payload.uid;
         }
         catch (error) {

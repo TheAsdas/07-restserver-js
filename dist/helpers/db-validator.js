@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userIdIsValid = exports.userIsUnique = exports.validateRole = void 0;
+exports.categoryNameIsTaken = exports.categoryExists = exports.userIdIsValid = exports.userIsUnique = exports.validateRole = void 0;
 const models_1 = require("../models");
 const validateRole = (rol) => __awaiter(void 0, void 0, void 0, function* () {
     if (!(yield models_1.Role.exists({ rol })))
@@ -26,4 +26,14 @@ const userIdIsValid = (id) => __awaiter(void 0, void 0, void 0, function* () {
         throw new Error(`El usuario con ID ${id} no existe.`);
 });
 exports.userIdIsValid = userIdIsValid;
+const categoryExists = (_id) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!(yield models_1.Category.exists({ _id })))
+        throw Error(`La categoría con ID ${_id} no existe.`);
+});
+exports.categoryExists = categoryExists;
+const categoryNameIsTaken = (name) => __awaiter(void 0, void 0, void 0, function* () {
+    if (yield models_1.Category.exists({ name: name.toUpperCase() }))
+        throw Error(`El nombre ${name} ya está en uso.`);
+});
+exports.categoryNameIsTaken = categoryNameIsTaken;
 //# sourceMappingURL=db-validator.js.map

@@ -14,17 +14,17 @@ const v = {
             .not()
             .isEmpty()
             .withMessage("Tienes que proveer una contraseña válida."),
-        field_validations_1.validate,
+        field_validations_1.validateRequestFields,
     ],
     google: [
         (0, express_validator_1.check)("id_token")
             .not()
             .isEmpty()
             .withMessage("Tienes que proveer el token de Google."),
-        field_validations_1.validate,
+        field_validations_1.validateRequestFields,
     ],
 };
-router.post("/login", controller_1.auth.login);
-router.post("/google", v.google, controller_1.auth.google);
+router.post("/login", controller_1.authController.login);
+router.post("/google", v.google, controller_1.authController.google);
 exports.default = router;
 //# sourceMappingURL=auth.js.map

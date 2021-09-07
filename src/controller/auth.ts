@@ -1,16 +1,16 @@
 import { compareSync } from "bcryptjs";
 import { RequestHandler } from "express";
-import Usuario from "../models/Usuario";
+
 import { generateJwt } from "../helpers/json-web-tokens";
-import RequestError from "../errors/RequestError";
 import { verifyGoogleCredentials } from "../helpers/google-auth";
-import authErrors from "../errors/authErrors";
+import { User } from "../models";
+import { RequestError, authErrors } from "../errors";
 import { iRequestError } from "../errors/.d";
 
 export const login: RequestHandler = async (req, res) => {
 	console.log(req);
 	const { correo, clave } = req.body;
-	const usuario = await Usuario.findOne({ correo, estado: true });
+	const usuario = await User.findOne({ correo, estado: true });
 
 	try {
 		const { USER_NOT_REGISTERED, USER_USED_GOOGLE, INCORRECT_PASSWORD } =
@@ -43,7 +43,7 @@ export const google: RequestHandler = async (req, res) => {
 		const { nombre, img, correo } = await verifyGoogleCredentials(id_token);
 		const { USER_DEACTIVATED } = authErrors;
 
-		let usuario = await Usuario.findOne({ correo });
+		let usuario = await User.findOne({ correo });
 
 		if (!usuario) {
 			//crear usuario
@@ -55,7 +55,7 @@ export const google: RequestHandler = async (req, res) => {
 				google: true,
 				rol: "USER",
 			};
-			usuario = new Usuario(userData);
+			usuario = new User(userData);
 			await usuario.save();
 		} else if (!usuario.estado) throw RequestError(USER_DEACTIVATED);
 

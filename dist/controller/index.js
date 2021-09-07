@@ -19,11 +19,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.user = exports.category = exports.auth = void 0;
+exports.user = exports.category = exports.authController = void 0;
 const auth_controller = __importStar(require("./auth"));
 const user_controller = __importStar(require("./users"));
 const category_controller = __importStar(require("./categories"));
-exports.auth = auth_controller;
+exports.authController = auth_controller;
 exports.category = category_controller;
 exports.user = user_controller;
 //# sourceMappingURL=index.js.map

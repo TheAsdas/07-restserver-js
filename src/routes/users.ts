@@ -1,7 +1,11 @@
 import { Router } from "express";
 import { check } from "express-validator";
 
-import { validate, userHasRoles, validateJwt } from "../middlewares";
+import {
+	validateRequestFields,
+	userHasRoles,
+	validateJwt,
+} from "../middlewares";
 import { user } from "../controller";
 import {
 	validateRole,
@@ -14,7 +18,7 @@ const router = Router();
 /**
  * # Validación
  */
-const v = {
+const validate = {
 	post: [
 		check("nombre", "El nombre es obligatorio y no puede estar vacío.")
 			.not()
@@ -25,7 +29,7 @@ const v = {
 		).isLength({ min: 6 }),
 		check("rol").custom(validateRole),
 		check("correo", "El correo no es válido.").isEmail().custom(userIsUnique),
-		validate,
+		validateRequestFields,
 	],
 	put: [
 		check("id")
@@ -33,7 +37,7 @@ const v = {
 			.withMessage("La ID no es válida.")
 			.custom(userIdIsValid),
 		check("rol").custom(validateRole),
-		validate,
+		validateRequestFields,
 	],
 	delete: [
 		validateJwt,
@@ -42,18 +46,16 @@ const v = {
 			.isMongoId()
 			.withMessage("La ID no es válida.")
 			.custom(userIdIsValid),
-		validate,
+		validateRequestFields,
 	],
 };
 
 router.get("/", user.get);
 
-router.put("/:id", v.put, user.put);
+router.put("/:id", validate.put, user.put);
 
-router.post("/", v.post, user.post);
+router.post("/", validate.post, user.post);
 
-router.delete("/:id", v.delete, user.delete_);
-
-router.patch("/", user.patch);
+router.delete("/:id", validate.delete, user.delete_);
 
 export default router;

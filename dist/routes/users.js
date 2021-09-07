@@ -6,7 +6,7 @@ const middlewares_1 = require("../middlewares");
 const controller_1 = require("../controller");
 const db_validator_1 = require("../helpers/db-validator");
 const router = (0, express_1.Router)();
-const v = {
+const validate = {
     post: [
         (0, express_validator_1.check)("nombre", "El nombre es obligatorio y no puede estar vacío.")
             .not()
@@ -14,7 +14,7 @@ const v = {
         (0, express_validator_1.check)("clave", "La contraseña es obligatoria y debe tener más de 6 caracteres.").isLength({ min: 6 }),
         (0, express_validator_1.check)("rol").custom(db_validator_1.validateRole),
         (0, express_validator_1.check)("correo", "El correo no es válido.").isEmail().custom(db_validator_1.userIsUnique),
-        middlewares_1.validate,
+        middlewares_1.validateRequestFields,
     ],
     put: [
         (0, express_validator_1.check)("id")
@@ -22,7 +22,7 @@ const v = {
             .withMessage("La ID no es válida.")
             .custom(db_validator_1.userIdIsValid),
         (0, express_validator_1.check)("rol").custom(db_validator_1.validateRole),
-        middlewares_1.validate,
+        middlewares_1.validateRequestFields,
     ],
     delete: [
         middlewares_1.validateJwt,
@@ -31,13 +31,12 @@ const v = {
             .isMongoId()
             .withMessage("La ID no es válida.")
             .custom(db_validator_1.userIdIsValid),
-        middlewares_1.validate,
+        middlewares_1.validateRequestFields,
     ],
 };
 router.get("/", controller_1.user.get);
-router.put("/:id", v.put, controller_1.user.put);
-router.post("/", v.post, controller_1.user.post);
-router.delete("/:id", v.delete, controller_1.user.delete_);
-router.patch("/", controller_1.user.patch);
+router.put("/:id", validate.put, controller_1.user.put);
+router.post("/", validate.post, controller_1.user.post);
+router.delete("/:id", validate.delete, controller_1.user.delete_);
 exports.default = router;
 //# sourceMappingURL=users.js.map

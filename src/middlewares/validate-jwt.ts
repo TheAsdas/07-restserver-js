@@ -16,7 +16,7 @@ export const validateJwt: iMiddleware = async (req, res, next) => {
 		else if (!key) throw RequestError(SKEY_NOT_FOUND);
 
 		try {
-			let payload = jwt.verify(token, key) as JwtPayload;
+			const payload = jwt.verify(token, key) as JwtPayload;
 			uid = payload.uid;
 			//uid = _uid;
 		} catch (error) {

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { check } from "express-validator";
-import { validate } from "../middlewares/field-validations";
-import { auth } from "../controller";
+import { validateRequestFields } from "../middlewares/field-validations";
+import { authController } from "../controller";
 
 const router = Router();
 
@@ -17,18 +17,18 @@ const v = {
 			.not()
 			.isEmpty()
 			.withMessage("Tienes que proveer una contraseña válida."),
-		validate,
+		validateRequestFields,
 	],
 	google: [
 		check("id_token")
 			.not()
 			.isEmpty()
 			.withMessage("Tienes que proveer el token de Google."),
-		validate,
+		validateRequestFields,
 	],
 };
 
-router.post("/login", auth.login);
-router.post("/google", v.google, auth.google);
+router.post("/login", authController.login);
+router.post("/google", v.google, authController.google);
 
 export default router;

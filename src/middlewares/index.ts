@@ -1,5 +1,5 @@
-import { validate } from "./field-validations";
+import { validateRequestFields } from "./field-validations";
 import { validateJwt } from "./validate-jwt";
 import { userHasRoles, userIsAdmin } from "./validate-roles";
 
-export { validate, validateJwt, userHasRoles, userIsAdmin };
+export { validateRequestFields, validateJwt, userHasRoles, userIsAdmin };

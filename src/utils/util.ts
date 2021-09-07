@@ -1,3 +1,5 @@
+import { Request } from "express";
+
 type KeyVal = { [key: string]: any };
 
 /**
@@ -32,4 +34,58 @@ const hasAnyObjects = (obj: KeyVal): false | KeyVal[] => {
 	});
 
 	return foundObjects.length === 0 ? false : foundObjects;
+};
+
+interface iUrlParams {
+	offset: number;
+	limit: number;
+	total: number;
+	url: string;
+}
+
+interface iUrlReturnData {
+	last?: string | boolean;
+	next?: string | boolean;
+}
+
+export const calculateNextAndLastUrl = ({
+	offset,
+	limit,
+	total,
+	url,
+}: iUrlParams) => {
+	const urls: iUrlReturnData = {};
+
+	if (limit + offset < total!)
+		urls.next = `${url}?offset=${offset + limit}&limit=${limit}`;
+
+	if (offset !== 0)
+		urls.last = `${url}?offset=${
+			offset - limit < 0 ? 0 : offset - limit
+		}&limit=${limit}`;
+
+	return urls;
+};
+
+export const fullUrl = (req: Request) => req.protocol + "://" + req.get("host");
+
+interface iPaginationInput {
+	limit: any;
+	offset: any;
+}
+interface iPaginationOutput {
+	limit: number;
+	offset: number;
+}
+
+export const normalizePagination = ({
+	limit,
+	offset,
+}: iPaginationInput): iPaginationOutput => {
+	if (isNaN(Number(offset)) || Number(offset) < 0) offset = 0;
+	else offset = Number(offset);
+	if (isNaN(Number(limit)) || Number(limit) < 0) limit = 5;
+	else limit = Number(limit);
+
+	return { limit, offset };
 };

@@ -38,7 +38,8 @@ export interface iUser {
 	 * Si la cuenta fue creada con Google o no.
 	 */
 	google: boolean;
-	_id: string;
+	_id?: string;
+	uid?: string;
 }
 
 export interface iRole {
@@ -48,5 +49,8 @@ export interface iRole {
 export interface iCategory {
 	name: string;
 	state: boolean;
-	createdBy: iUser;
+	createdBy: iUser|string;
+	uid ?: string;
+	_id?: string;
+	__v: number;
 }
