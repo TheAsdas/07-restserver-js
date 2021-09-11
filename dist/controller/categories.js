@@ -20,7 +20,7 @@ const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         name = name.toUpperCase();
         const { ALREADY_EXISTS } = errors_1.queryErrors;
         if (yield models_1.Category.exists({ name }))
-            throw (0, errors_1.RequestError)(ALREADY_EXISTS);
+            throw errors_1.RequestError(ALREADY_EXISTS);
         const category = new models_1.Category({ name, createdBy: req.user._id });
         yield category.save();
         res.json({
@@ -50,7 +50,7 @@ const getOne = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.getOne = getOne;
 const getMany = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { offset, limit } = (0, util_1.normalizePagination)({
+        const { offset, limit } = util_1.normalizePagination({
             offset: req.query.offset,
             limit: req.query.limit,
         });
@@ -62,11 +62,11 @@ const getMany = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 .limit(+limit)
                 .populate("createdBy", "nombre"),
         ]);
-        const { next, last } = (0, util_1.calculateNextAndLastUrl)({
+        const { next, last } = util_1.calculateNextAndLastUrl({
             offset: +offset,
             limit: +limit,
             total,
-            url: (0, util_1.fullUrl)(req) + "/api/categorias",
+            url: util_1.fullUrl(req) + "/api/categorias",
         });
         res.json({ next, last, total, categories });
     }

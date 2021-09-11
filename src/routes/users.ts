@@ -6,7 +6,7 @@ import {
 	userHasRoles,
 	validateJwt,
 } from "../middlewares";
-import { user } from "../controller";
+import { users } from "../controller";
 import {
 	validateRole,
 	userIsUnique,
@@ -50,12 +50,12 @@ const validate = {
 	],
 };
 
-router.get("/", user.get);
+router.get("/", users.get);
 
-router.put("/:id", validate.put, user.put);
+router.put("/:id", validate.put, users.put);
 
-router.post("/", validate.post, user.post);
+router.post("/", validate.post, users.post);
 
-router.delete("/:id", validate.delete, user.delete_);
+router.delete("/:id", validate.delete, users.delete_);
 
 export default router;

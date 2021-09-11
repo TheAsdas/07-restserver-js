@@ -44,8 +44,8 @@ interface iUrlParams {
 }
 
 interface iUrlReturnData {
-	last?: string | boolean;
-	next?: string | boolean;
+	last?: string;
+	next?: string;
 }
 
 export const calculateNextAndLastUrl = ({

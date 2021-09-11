@@ -7,7 +7,7 @@ const generateJwt = ({ _id, rol, }) => {
         const payload = { uid: _id, rol };
         const key = process.env.SKEY;
         if (key)
-            (0, jsonwebtoken_1.sign)(payload, key, { expiresIn: "4h" }, (err, token) => {
+            jsonwebtoken_1.sign(payload, key, { expiresIn: "4h" }, (err, token) => {
                 if (err) {
                     console.log(err);
                     rej("Hemos tenido un problema para generar el token.");

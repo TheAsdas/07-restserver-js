@@ -24,20 +24,20 @@ const validateJwt = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         const key = process.env.SKEY;
         let uid;
         if (!token)
-            throw (0, RequestError_1.default)(JWT_NOT_FOUND);
+            throw RequestError_1.default(JWT_NOT_FOUND);
         else if (!key)
-            throw (0, RequestError_1.default)(SKEY_NOT_FOUND);
+            throw RequestError_1.default(SKEY_NOT_FOUND);
         try {
             const payload = jsonwebtoken_1.default.verify(token, key);
             uid = payload.uid;
         }
         catch (error) {
             const { message } = error;
-            throw (0, RequestError_1.default)([400, message]);
+            throw RequestError_1.default([400, message]);
         }
         const user = yield models_1.User.findOne({ _id: uid, estado: true });
         if (!user)
-            throw (0, RequestError_1.default)(USER_DEACTIVATED);
+            throw RequestError_1.default(USER_DEACTIVATED);
         req.headers["uid"] = uid;
         req.user = user;
         next();

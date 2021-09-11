@@ -1,11 +1,11 @@
-import { compareSync } from "bcryptjs";
 import { RequestHandler } from "express";
+import { compareSync } from "bcryptjs";
 
-import { generateJwt } from "../helpers/json-web-tokens";
 import { verifyGoogleCredentials } from "../helpers/google-auth";
-import { User } from "../models";
+import { generateJwt } from "../helpers/json-web-tokens";
 import { RequestError, authErrors } from "../errors";
 import { iRequestError } from "../errors/.d";
+import { User } from "../models";
 
 export const login: RequestHandler = async (req, res) => {
 	console.log(req);
@@ -24,7 +24,7 @@ export const login: RequestHandler = async (req, res) => {
 		// generar JWT
 		const token = await generateJwt(usuario);
 
-		return res.json({
+		res.json({
 			msg: "Andy's log are here.",
 			usuario,
 			token,
@@ -32,7 +32,7 @@ export const login: RequestHandler = async (req, res) => {
 	} catch (error) {
 		const { status = 400, message } = error as iRequestError;
 		console.log(error);
-		return res.status(status).json({ msg: message });
+		res.status(status).json({ msg: message });
 	}
 };
 
@@ -61,7 +61,7 @@ export const google: RequestHandler = async (req, res) => {
 
 		const token = await generateJwt(usuario);
 
-		return res.json({
+		res.json({
 			msg: "Has iniciado sesión con Google correctamente.",
 			user: usuario,
 			token,
@@ -70,6 +70,6 @@ export const google: RequestHandler = async (req, res) => {
 		const { status = 400, message: msg } = error as iRequestError;
 
 		console.log(error);
-		return res.status(status).json({ msg });
+		res.status(status).json({ msg });
 	}
 };

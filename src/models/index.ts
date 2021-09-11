@@ -1,6 +1,7 @@
 import Category from "./Category";
-import Role from "./Role";
-import User from "./Usuario";
+import Product from "./Product";
 import Server from "./Server";
+import User from "./Usuario";
+import Role from "./Role";
 
-export { Category, Role, User, Server };
+export { Category, Role, User, Server, Product };

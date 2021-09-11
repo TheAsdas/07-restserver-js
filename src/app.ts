@@ -1,9 +1,6 @@
 import dotenv from "dotenv";
 import { Server } from "./models";
 
-
-export var _LANG: any;
-
 dotenv.config();
 
 const main = async () => {

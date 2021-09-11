@@ -11,10 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.google = exports.login = void 0;
 const bcryptjs_1 = require("bcryptjs");
-const json_web_tokens_1 = require("../helpers/json-web-tokens");
 const google_auth_1 = require("../helpers/google-auth");
-const models_1 = require("../models");
+const json_web_tokens_1 = require("../helpers/json-web-tokens");
 const errors_1 = require("../errors");
+const models_1 = require("../models");
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(req);
     const { correo, clave } = req.body;
@@ -22,13 +22,13 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { USER_NOT_REGISTERED, USER_USED_GOOGLE, INCORRECT_PASSWORD } = errors_1.authErrors;
         if (!usuario)
-            throw (0, errors_1.RequestError)(USER_NOT_REGISTERED);
+            throw errors_1.RequestError(USER_NOT_REGISTERED);
         if (usuario.google)
-            throw (0, errors_1.RequestError)(USER_USED_GOOGLE);
-        if (!(0, bcryptjs_1.compareSync)(clave, usuario.clave))
-            throw (0, errors_1.RequestError)(INCORRECT_PASSWORD);
-        const token = yield (0, json_web_tokens_1.generateJwt)(usuario);
-        return res.json({
+            throw errors_1.RequestError(USER_USED_GOOGLE);
+        if (!bcryptjs_1.compareSync(clave, usuario.clave))
+            throw errors_1.RequestError(INCORRECT_PASSWORD);
+        const token = yield json_web_tokens_1.generateJwt(usuario);
+        res.json({
             msg: "Andy's log are here.",
             usuario,
             token,
@@ -37,14 +37,14 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         const { status = 400, message } = error;
         console.log(error);
-        return res.status(status).json({ msg: message });
+        res.status(status).json({ msg: message });
     }
 });
 exports.login = login;
 const google = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id_token } = req.body;
     try {
-        const { nombre, img, correo } = yield (0, google_auth_1.verifyGoogleCredentials)(id_token);
+        const { nombre, img, correo } = yield google_auth_1.verifyGoogleCredentials(id_token);
         const { USER_DEACTIVATED } = errors_1.authErrors;
         let usuario = yield models_1.User.findOne({ correo });
         if (!usuario) {
@@ -60,9 +60,9 @@ const google = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             yield usuario.save();
         }
         else if (!usuario.estado)
-            throw (0, errors_1.RequestError)(USER_DEACTIVATED);
-        const token = yield (0, json_web_tokens_1.generateJwt)(usuario);
-        return res.json({
+            throw errors_1.RequestError(USER_DEACTIVATED);
+        const token = yield json_web_tokens_1.generateJwt(usuario);
+        res.json({
             msg: "Has iniciado sesión con Google correctamente.",
             user: usuario,
             token,
@@ -71,7 +71,7 @@ const google = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         const { status = 400, message: msg } = error;
         console.log(error);
-        return res.status(status).json({ msg });
+        res.status(status).json({ msg });
     }
 });
 exports.google = google;

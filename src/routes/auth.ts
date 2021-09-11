@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { check } from "express-validator";
-import { validateRequestFields } from "../middlewares/field-validations";
-import { authController } from "../controller";
+import { validateRequestFields } from "../middlewares";
+import { auth } from "../controller";
 
 const router = Router();
 
@@ -28,7 +28,7 @@ const v = {
 	],
 };
 
-router.post("/login", authController.login);
-router.post("/google", v.google, authController.google);
+router.post("/login", auth.login);
+router.post("/google", v.google, auth.google);
 
 export default router;

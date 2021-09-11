@@ -12,15 +12,20 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
+const _1 = require(".");
 const schema = new mongoose_1.Schema({
-    name: { type: String, required: true, unique: true },
-    state: { type: Boolean, default: true },
     createdBy: { type: mongoose_1.Schema.Types.ObjectId, ref: "Usuario", required: true },
+    category: { type: mongoose_1.Schema.Types.ObjectId, ref: _1.Category, required: true },
     editedBy: { type: mongoose_1.Schema.Types.ObjectId, ref: "Usuario" },
-});
+    name: { type: String, required: true, unique: true },
+    available: { type: Boolean, default: true },
+    state: { type: Boolean, default: true },
+    description: { type: String },
+    price: { type: Number },
+}, {});
 schema.methods.toJSON = function () {
-    const _a = this.toObject(), { __v, state } = _a, rest = __rest(_a, ["__v", "state"]);
-    return rest;
+    const _a = this.toObject(), { __v, state } = _a, data = __rest(_a, ["__v", "state"]);
+    return data;
 };
-exports.default = mongoose_1.model("Category", schema);
-//# sourceMappingURL=Category.js.map
+exports.default = mongoose_1.model("Product", schema);
+//# sourceMappingURL=Product.js.map

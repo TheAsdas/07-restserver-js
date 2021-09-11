@@ -1,8 +1,12 @@
 import { Router } from "express";
 import { check } from "express-validator";
-import { category } from "../controller";
+import { categories } from "../controller";
 import { categoryExists, categoryNameIsTaken } from "../helpers/db-validator";
-import { userIsAdmin, validateJwt, validateRequestFields } from "../middlewares";
+import {
+	userIsAdmin,
+	validateJwt,
+	validateRequestFields,
+} from "../middlewares";
 
 /**
  * # Router de categorías
@@ -54,17 +58,17 @@ const validate = {
 	],
 };
 
-router.get("/", category.getMany);
+router.get("/", categories.getMany);
 
-router.get("/:id", validate.getOne, category.getOne);
-
-/* Privado: solo con JWT */
-router.post("/", validate.post, category.create);
+router.get("/:id", validate.getOne, categories.getOne);
 
 /* Privado: solo con JWT */
-router.put("/:id", validate.put, category.edit);
+router.post("/", validate.post, categories.create);
 
 /* Privado: solo con JWT */
-router.delete("/:id", validate.delete, category.remove);
+router.put("/:id", validate.put, categories.edit);
+
+/* Privado: solo con JWT */
+router.delete("/:id", validate.delete, categories.remove);
 
 export default router;

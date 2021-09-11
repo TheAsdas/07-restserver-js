@@ -3,7 +3,7 @@ import { Express } from "express-serve-static-core";
 /**
  * Un servidor de Express.
  */
-export interface iServer {
+declare interface iServer {
 	/**
 	 * Servidor Express.
 	 */
@@ -13,12 +13,12 @@ export interface iServer {
 	 */
 	port?: string;
 	/**
-	 * Comienza el sevidor en el puerto especificado en el archivo de variables de entorno.
+	 * Comienza el servidor en el puerto especificado en el archivo de variables de entorno.
 	 */
 	listen: () => void;
 }
 
-export interface iUser {
+declare interface iUser {
 	nombre: string;
 	correo: string;
 	/**
@@ -26,7 +26,7 @@ export interface iUser {
 	 */
 	clave: string;
 	/**
-	 * URL a imágen de perfil.
+	 * URL a imagen de perfil.
 	 */
 	img?: string;
 	rol: string;
@@ -42,15 +42,31 @@ export interface iUser {
 	uid?: string;
 }
 
-export interface iRole {
+declare interface iRole {
 	rol: string;
 }
 
-export interface iCategory {
+declare interface iCategory {
 	name: string;
 	state: boolean;
-	createdBy: iUser | string;
-	editedBy: iUser | string;
+	createdBy: iUser | iThing;
+	editedBy?: iUser | iThing;
 	_id: string;
 	__v?: number;
+}
+
+declare interface iThing {
+	name: string;
+	_id: string;
+}
+
+declare interface iProduct {
+	name: string;
+	state: boolean;
+	createdBy: iThing | string;
+	editedBy?: iThing | string;
+	price?: number;
+	category: string | iThing;
+	description?: string;
+	available: boolean;
 }

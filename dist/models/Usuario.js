@@ -13,39 +13,18 @@ var __rest = (this && this.__rest) || function (s, e) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 const schema = new mongoose_1.Schema({
-    nombre: {
-        type: String,
-        required: [true, "El nombre es obligatorio."],
-    },
-    correo: {
-        type: String,
-        required: [true, "El correo es obligatorio."],
-        unique: true,
-    },
-    clave: {
-        type: String,
-        required: [true, "La contraseña es obligatoria"],
-    },
-    img: {
-        type: String,
-    },
-    rol: {
-        type: String,
-        required: true,
-    },
-    estado: {
-        type: Boolean,
-        default: true,
-    },
-    google: {
-        type: Boolean,
-        default: false,
-    },
+    nombre: { type: String, required: true },
+    correo: { type: String, required: true, unique: true },
+    clave: { type: String, required: true },
+    img: { type: String },
+    rol: { type: String, required: true },
+    estado: { type: Boolean, default: true },
+    google: { type: Boolean, default: false },
 });
 schema.methods.toJSON = function () {
     const _a = this.toObject(), { __v, clave, _id } = _a, user = __rest(_a, ["__v", "clave", "_id"]);
     user.uid = _id;
     return user;
 };
-exports.default = (0, mongoose_1.model)("Usuario", schema);
+exports.default = mongoose_1.model("Usuario", schema);
 //# sourceMappingURL=Usuario.js.map

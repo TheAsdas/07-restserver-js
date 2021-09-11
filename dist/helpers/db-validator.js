@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.categoryNameIsTaken = exports.categoryExists = exports.userIdIsValid = exports.userIsUnique = exports.validateRole = void 0;
+exports.productNameIsTaken = exports.entryExists = exports.productExists = exports.categoryNameIsTaken = exports.categoryExists = exports.userIdIsValid = exports.userIsUnique = exports.validateRole = void 0;
 const models_1 = require("../models");
 const validateRole = (rol) => __awaiter(void 0, void 0, void 0, function* () {
     if (!(yield models_1.Role.exists({ rol })))
@@ -36,4 +36,20 @@ const categoryNameIsTaken = (name) => __awaiter(void 0, void 0, void 0, function
         throw Error(`El nombre ${name} ya está en uso.`);
 });
 exports.categoryNameIsTaken = categoryNameIsTaken;
+const productExists = (_id) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!(yield models_1.Product.exists({ _id, state: true })))
+        throw Error(`El producto con ID ${_id} no existe.`);
+});
+exports.productExists = productExists;
+const entryExists = ({ model, filterBy = "_id", filter = {} }) => (value) => __awaiter(void 0, void 0, void 0, function* () {
+    filter[filterBy] = value;
+    if (!(yield model.exists(filter)))
+        throw Error(`${model.modelName} con ${filterBy}=${value} no existe.`);
+});
+exports.entryExists = entryExists;
+const productNameIsTaken = (name) => __awaiter(void 0, void 0, void 0, function* () {
+    if (yield models_1.Product.exists({ name }))
+        throw Error(`El nombre ${name} ya está en uso.`);
+});
+exports.productNameIsTaken = productNameIsTaken;
 //# sourceMappingURL=db-validator.js.map

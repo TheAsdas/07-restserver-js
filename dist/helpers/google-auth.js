@@ -32,7 +32,7 @@ const verifyGoogleCredentials = (idToken) => __awaiter(void 0, void 0, void 0, f
         return userData;
     }
     catch (error) {
-        throw (0, RequestError_1.default)([400, error.message]);
+        throw RequestError_1.default([400, error.message]);
     }
 });
 exports.verifyGoogleCredentials = verifyGoogleCredentials;

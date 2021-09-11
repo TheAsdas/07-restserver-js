@@ -47,7 +47,7 @@ const put = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const _a = req.body, { clave, google, estado, _id } = _a, data = __rest(_a, ["clave", "google", "estado", "_id"]);
     if (clave) {
-        data.clave = (0, bcryptjs_1.hashSync)(clave);
+        data.clave = bcryptjs_1.hashSync(clave);
     }
     const usuario = yield Usuario_1.default.findByIdAndUpdate(id, data);
     res.json({ msg: "Usuario actualizado.", usuario });
@@ -55,7 +55,7 @@ const put = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.put = put;
 const post = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { nombre, correo, clave, rol } = req.body;
-    const hashedPass = (0, bcryptjs_1.hashSync)(clave);
+    const hashedPass = bcryptjs_1.hashSync(clave);
     const usuario = new Usuario_1.default({ nombre, correo, clave: hashedPass, rol });
     try {
         yield usuario.save();

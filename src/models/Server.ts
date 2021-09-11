@@ -1,15 +1,17 @@
-import express, { RequestHandler } from "express";
+import express from "express";
 import cors from "cors";
 
 import { connect } from "../database/config";
 import * as routes from "../routes";
 
 import { iServer } from "./.d";
+import { RouteError } from "../errors";
 
 const paths: { [key: string]: string } = {
 	auth: "/api/auth",
-	category: "/api/categorias",
-	user: "/api/usuarios",
+	categories: "/api/categorias",
+	users: "/api/usuarios",
+	products: "/api/productos",
 };
 const middlewares = [express.static("dist/public"), express.json(), cors()];
 
@@ -36,13 +38,7 @@ const setRoutes = (server: iServer) => {
 	Object.keys(paths).forEach((key) => {
 		///@ts-ignore
 		let router = routes[key];
-		if (!router)
-			throw Error(
-				'El router para la ruta " ' +
-					key +
-					'" no se encontró en el index de rutas. ' +
-					"Recuerda que el nombre de la ruta y el router deben ser iguales."
-			);
+		if (!router) throw RouteError(key);
 		server.app.use(paths[key], router);
 	});
 };
