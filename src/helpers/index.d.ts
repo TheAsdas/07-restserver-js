@@ -1,7 +1,7 @@
 import {Model} from "mongoose";
 
-declare namespace pagination {
-	namespace normalize {
+declare namespace Pagination {
+	namespace normalizePagination {
 		type input = {
 			limit?: string | number;
 			offset?: string | number;
@@ -27,7 +27,7 @@ declare namespace pagination {
 }
 
 declare namespace db_validator {
-	namespace entryExists {
+	export namespace entryExists {
 		interface input {
 			/**
 			 * Modelo del esquema que se quiere verificar.

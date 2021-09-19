@@ -6,7 +6,7 @@ import {
 	fullUrl,
 	calculateNextAndLastUrl,
 	normalizePagination,
-} from "../helpers/util";
+} from "../helpers/pagination";
 
 export const create: RequestHandler = async (req, res) => {
 	try {
@@ -55,8 +55,8 @@ export const getOne: RequestHandler = async (req, res) => {
 export const getMany: RequestHandler = async (req, res) => {
 	try {
 		const { offset, limit } = normalizePagination({
-			offset: req.query.offset,
-			limit: req.query.limit,
+			offset: req.query.offset as string,
+			limit: req.query.limit as string,
 		});
 
 		const query = { state: true };

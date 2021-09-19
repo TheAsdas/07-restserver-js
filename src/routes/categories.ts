@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { check } from "express-validator";
 import { categories } from "../controller";
-import { categoryExists, categoryNameIsTaken } from "../helpers/db-validator";
+import { categoryExists, categoryNameIsTaken } from "../helpers/db_validator";
 import {
 	userIsAdmin,
 	validateJwt,

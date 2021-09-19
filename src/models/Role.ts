@@ -1,8 +1,8 @@
 import { model, Schema } from "mongoose";
-import { iRole } from "./.d";
+import {models} from "./.d";
 
-const schema = new Schema<iRole>({
+const schema = new Schema<models.Role>({
 	rol: { type: String, required: true },
 });
 
-export default model<iRole>("Role", schema);
+export default model<models.Role>("Role", schema);

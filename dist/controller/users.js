@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __rest = (this && this.__rest) || function (s, e) {
     var t = {};
     for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
@@ -26,7 +17,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.patch = exports.delete_ = exports.post = exports.put = exports.get = void 0;
 const Usuario_1 = __importDefault(require("../models/Usuario"));
 const bcryptjs_1 = require("bcryptjs");
-const get = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const get = async (req, res) => {
     const { limite = 5, desde = 0 } = req.query;
     const errors = [];
     if (isNaN(Number(limite)))
@@ -36,29 +27,29 @@ const get = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (errors.length !== 0)
         return res.json({ errors });
     const query = { estado: true };
-    const [total, usuarios] = yield Promise.all([
+    const [total, usuarios] = await Promise.all([
         Usuario_1.default.count(query),
         Usuario_1.default.find(query).skip(Number(desde)).limit(Number(limite)),
     ]);
     return res.json({ total, usuarios });
-});
+};
 exports.get = get;
-const put = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const put = async (req, res) => {
     const { id } = req.params;
     const _a = req.body, { clave, google, estado, _id } = _a, data = __rest(_a, ["clave", "google", "estado", "_id"]);
     if (clave) {
         data.clave = bcryptjs_1.hashSync(clave);
     }
-    const usuario = yield Usuario_1.default.findByIdAndUpdate(id, data);
+    const usuario = await Usuario_1.default.findByIdAndUpdate(id, data);
     res.json({ msg: "Usuario actualizado.", usuario });
-});
+};
 exports.put = put;
-const post = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const post = async (req, res) => {
     const { nombre, correo, clave, rol } = req.body;
     const hashedPass = bcryptjs_1.hashSync(clave);
     const usuario = new Usuario_1.default({ nombre, correo, clave: hashedPass, rol });
     try {
-        yield usuario.save();
+        await usuario.save();
         res
             .status(201)
             .json({ msg: "Hemos creado al usuario exitosamente.", usuario });
@@ -67,13 +58,13 @@ const post = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(400).json(error);
         return;
     }
-});
+};
 exports.post = post;
-const delete_ = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const delete_ = async (req, res) => {
     const { id } = req.params;
     const requestingUser = req.user;
     try {
-        const deletedUser = yield Usuario_1.default.findByIdAndUpdate(id, { estado: false });
+        const deletedUser = await Usuario_1.default.findByIdAndUpdate(id, { estado: false });
         res.json({
             msg: "Hemos borrado el usuario correctamente.",
             requestingUser,
@@ -83,7 +74,7 @@ const delete_ = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         res.status(400).json({ msg: error.message });
     }
-});
+};
 exports.delete_ = delete_;
 const patch = (req, res) => {
     res.json({ status: "patch", response: "Hola, mundo!" });

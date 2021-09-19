@@ -1,72 +1,53 @@
-import { Express } from "express-serve-static-core";
+import {Express} from "express-serve-static-core";
 
-/**
- * Un servidor de Express.
- */
-declare interface iServer {
-	/**
-	 * Servidor Express.
-	 */
-	app: Express;
-	/**
-	 * Puerto en que el servidor escucha.
-	 */
-	port?: string;
-	/**
-	 * Comienza el servidor en el puerto especificado en el archivo de variables de entorno.
-	 */
-	listen: () => void;
-}
 
-declare interface iUser {
-	nombre: string;
-	correo: string;
-	/**
-	 * Hash.
-	 */
-	clave: string;
-	/**
-	 * URL a imagen de perfil.
-	 */
-	img?: string;
-	rol: string;
-	/**
-	 * Si la cuenta está activada o no.
-	 */
-	estado: boolean;
-	/**
-	 * Si la cuenta fue creada con Google o no.
-	 */
-	google: boolean;
-	_id?: string;
-	uid?: string;
-}
+declare namespace models {
+	interface Server {
+		app: Express;
+		port?: string;
+		listen: () => void;
+	}
 
-declare interface iRole {
-	rol: string;
-}
+	interface Model {
+		_id: string,
+		_v: number
+	}
 
-declare interface iCategory {
-	name: string;
-	state: boolean;
-	createdBy: iUser | iThing;
-	editedBy?: iUser | iThing;
-	_id: string;
-	__v?: number;
-}
+	interface User extends Model{
+		nombre: string;
+		correo: string;
+		clave: string;
+		img?: string;
+		rol: string;
+		estado: boolean;
+		google: boolean;
+		uid?: string;
+	}
 
-declare interface iThing {
-	name: string;
-	_id: string;
-}
+	interface Role extends Model{
+		rol: string;
+	}
 
-declare interface iProduct {
-	name: string;
-	state: boolean;
-	createdBy: iThing | string;
-	editedBy?: iThing | string;
-	price?: number;
-	category: string | iThing;
-	description?: string;
-	available: boolean;
+	interface Category extends Model{
+		name: string;
+		state: boolean;
+		createdBy: iUser | PersonShort;
+		editedBy?: iUser | PersonShort;
+	}
+
+	interface PersonShort {
+		name: string;
+		_id: string;
+	}
+
+	interface Product extends Model{
+		name: string;
+		state: boolean;
+		createdBy: PersonShort | string;
+		editedBy?: PersonShort | string;
+		price?: number;
+		category: string | PersonShort;
+		description?: string;
+		available: boolean;
+	}
 }

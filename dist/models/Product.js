@@ -12,10 +12,9 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
-const _1 = require(".");
 const schema = new mongoose_1.Schema({
     createdBy: { type: mongoose_1.Schema.Types.ObjectId, ref: "Usuario", required: true },
-    category: { type: mongoose_1.Schema.Types.ObjectId, ref: _1.Category, required: true },
+    category: { type: mongoose_1.Schema.Types.ObjectId, ref: "Category", required: true },
     editedBy: { type: mongoose_1.Schema.Types.ObjectId, ref: "Usuario" },
     name: { type: String, required: true, unique: true },
     available: { type: Boolean, default: true },

@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
-import { iCategory } from "./.d";
+import { models } from "./.d";
 
-const schema = new Schema<iCategory>({
+const schema = new Schema<models.Category>({
 	name: { type: String, required: true, unique: true },
 	state: { type: Boolean, default: true },
 	createdBy: { type: Schema.Types.ObjectId, ref: "Usuario", required: true },
@@ -13,4 +13,4 @@ schema.methods.toJSON = function () {
 	return rest;
 };
 
-export default model<iCategory>("Category", schema);
+export default model<models.Category>("Category", schema);

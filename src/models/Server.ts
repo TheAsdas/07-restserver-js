@@ -1,11 +1,11 @@
 import express from "express";
 import cors from "cors";
 
-import { connect } from "../database/config";
+import {connect} from "../database/config";
 import * as routes from "../routes";
 
-import { iServer } from "./.d";
-import { RouteError } from "../errors";
+import {RouteError} from "../errors";
+import {models} from "./.d";
 
 const paths: { [key: string]: string } = {
 	auth: "/api/auth",
@@ -13,19 +13,18 @@ const paths: { [key: string]: string } = {
 	users: "/api/usuarios",
 	products: "/api/productos",
 };
-const middlewares = [express.static("dist/public"), express.json(), cors()];
 
 /**
  * Crea una instancia de servidor, la configura y la retorna.
  */
-const init = (port?: number) => {
-	const server: iServer = {
+const ServerConstructor = async (port?: number) => {
+	const server: models.Server = {
 		app: express(),
 		port: port?.toString() ?? process.env.PORT,
 		listen: () => listen(server),
 	};
 
-	connectToDatabase();
+	await connectToDatabase();
 	setMiddlewares(server);
 	setRoutes(server);
 
@@ -34,7 +33,7 @@ const init = (port?: number) => {
 
 const connectToDatabase = async () => await connect();
 
-const setRoutes = (server: iServer) => {
+const setRoutes = (server: models.Server) => {
 	Object.keys(paths).forEach((key) => {
 		///@ts-ignore
 		let router = routes[key];
@@ -43,12 +42,12 @@ const setRoutes = (server: iServer) => {
 	});
 };
 
-const setMiddlewares = (server: iServer) => {
-	server.app.use(middlewares);
+const setMiddlewares = (server: models.Server) => {
+	server.app.use([express.static("dist/public"), express.json(), cors()]);
 };
 
-const listen = (server: iServer) => {
-	const { app, port } = server;
+const listen = (server: models.Server) => {
+	const {app, port} = server;
 
 	if (!port) throw Error("El puerto no fue especificado.");
 
@@ -57,4 +56,4 @@ const listen = (server: iServer) => {
 	});
 };
 
-export default init;
+export default ServerConstructor;

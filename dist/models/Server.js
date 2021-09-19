@@ -18,15 +18,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -42,20 +33,19 @@ const paths = {
     users: "/api/usuarios",
     products: "/api/productos",
 };
-const middlewares = [express_1.default.static("dist/public"), express_1.default.json(), cors_1.default()];
-const init = (port) => {
+const ServerConstructor = async (port) => {
     var _a;
     const server = {
         app: express_1.default(),
         port: (_a = port === null || port === void 0 ? void 0 : port.toString()) !== null && _a !== void 0 ? _a : process.env.PORT,
         listen: () => listen(server),
     };
-    connectToDatabase();
+    await connectToDatabase();
     setMiddlewares(server);
     setRoutes(server);
     return server;
 };
-const connectToDatabase = () => __awaiter(void 0, void 0, void 0, function* () { return yield config_1.connect(); });
+const connectToDatabase = async () => await config_1.connect();
 const setRoutes = (server) => {
     Object.keys(paths).forEach((key) => {
         let router = routes[key];
@@ -65,7 +55,7 @@ const setRoutes = (server) => {
     });
 };
 const setMiddlewares = (server) => {
-    server.app.use(middlewares);
+    server.app.use([express_1.default.static("dist/public"), express_1.default.json(), cors_1.default()]);
 };
 const listen = (server) => {
     const { app, port } = server;
@@ -75,5 +65,5 @@ const listen = (server) => {
         console.log("Servidor escuchando en el puerto", port);
     });
 };
-exports.default = init;
+exports.default = ServerConstructor;
 //# sourceMappingURL=Server.js.map

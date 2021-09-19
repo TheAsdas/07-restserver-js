@@ -11,7 +11,7 @@ import {
 	validateRole,
 	userIsUnique,
 	userIdIsValid,
-} from "../helpers/db-validator";
+} from "../helpers/db_validator";
 
 const router = Router();
 
