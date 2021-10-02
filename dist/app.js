@@ -8,7 +8,7 @@ const models_1 = require("./models");
 dotenv_1.default.config();
 const main = async () => {
     console.clear();
-    const server = await models_1.Server();
+    const server = await (0, models_1.Server)();
     server.listen();
 };
 main();

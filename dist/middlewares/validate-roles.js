@@ -7,9 +7,9 @@ const userIsAdmin = (req, res, next) => {
         const userRole = req.user.rol;
         const { USER_NOT_DEFINED, NO_PRIVILEGES } = errors_1.authErrors;
         if (!userRole)
-            throw errors_1.RequestError(USER_NOT_DEFINED);
+            throw (0, errors_1.RequestError)(USER_NOT_DEFINED);
         if (userRole !== "ADMIN")
-            throw errors_1.RequestError(NO_PRIVILEGES);
+            throw (0, errors_1.RequestError)(NO_PRIVILEGES);
         next();
     }
     catch (error) {
@@ -24,9 +24,9 @@ const userHasRoles = (...validRoles) => {
             const userRole = req.user.rol;
             const { USER_NOT_DEFINED, NO_PRIVILEGES } = errors_1.authErrors;
             if (!userRole)
-                throw errors_1.RequestError(USER_NOT_DEFINED);
+                throw (0, errors_1.RequestError)(USER_NOT_DEFINED);
             if (!validRoles.includes(userRole))
-                throw errors_1.RequestError(NO_PRIVILEGES);
+                throw (0, errors_1.RequestError)(NO_PRIVILEGES);
             next();
         }
         catch (error) {

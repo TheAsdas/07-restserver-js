@@ -36,7 +36,7 @@ const paths = {
 const ServerConstructor = async (port) => {
     var _a;
     const server = {
-        app: express_1.default(),
+        app: (0, express_1.default)(),
         port: (_a = port === null || port === void 0 ? void 0 : port.toString()) !== null && _a !== void 0 ? _a : process.env.PORT,
         listen: () => listen(server),
     };
@@ -45,17 +45,17 @@ const ServerConstructor = async (port) => {
     setRoutes(server);
     return server;
 };
-const connectToDatabase = async () => await config_1.connect();
+const connectToDatabase = async () => await (0, config_1.connect)();
 const setRoutes = (server) => {
     Object.keys(paths).forEach((key) => {
         let router = routes[key];
         if (!router)
-            throw errors_1.RouteError(key);
+            throw (0, errors_1.RouteError)(key);
         server.app.use(paths[key], router);
     });
 };
 const setMiddlewares = (server) => {
-    server.app.use([express_1.default.static("dist/public"), express_1.default.json(), cors_1.default()]);
+    server.app.use([express_1.default.static("dist/public"), express_1.default.json(), (0, cors_1.default)()]);
 };
 const listen = (server) => {
     const { app, port } = server;

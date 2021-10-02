@@ -11,7 +11,7 @@ const create = async (req, res) => {
         name = name.toUpperCase();
         const { ALREADY_EXISTS } = errors_1.queryErrors;
         if (await models_1.Category.exists({ name }))
-            throw errors_1.RequestError(ALREADY_EXISTS);
+            throw (0, errors_1.RequestError)(ALREADY_EXISTS);
         const category = new models_1.Category({ name, createdBy: req.user._id });
         await category.save();
         res.json({
@@ -41,7 +41,7 @@ const getOne = async (req, res) => {
 exports.getOne = getOne;
 const getMany = async (req, res) => {
     try {
-        const { offset, limit } = pagination_1.normalizePagination({
+        const { offset, limit } = (0, pagination_1.normalizePagination)({
             offset: req.query.offset,
             limit: req.query.limit,
         });
@@ -53,11 +53,11 @@ const getMany = async (req, res) => {
                 .limit(+limit)
                 .populate("createdBy", "nombre"),
         ]);
-        const { next, last } = pagination_1.calculateNextAndLastUrl({
+        const { next, last } = (0, pagination_1.calculateNextAndLastUrl)({
             offset: +offset,
             limit: +limit,
             total,
-            url: pagination_1.fullUrl(req) + "/api/categorias",
+            url: (0, pagination_1.fullUrl)(req) + "/api/categorias",
         });
         res.json({ next, last, total, categories });
     }

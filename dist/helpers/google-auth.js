@@ -23,7 +23,7 @@ const verifyGoogleCredentials = async (idToken) => {
         return userData;
     }
     catch (error) {
-        throw RequestError_1.default([400, error.message]);
+        throw (0, RequestError_1.default)([400, error.message]);
     }
 };
 exports.verifyGoogleCredentials = verifyGoogleCredentials;

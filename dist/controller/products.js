@@ -22,7 +22,7 @@ const populateParams = [
 ];
 const getMany = () => async (req, res) => {
     try {
-        const { offset, limit } = pagination_1.normalizePagination({
+        const { offset, limit } = (0, pagination_1.normalizePagination)({
             offset: req.query.offset,
             limit: req.query.limit,
         });
@@ -34,11 +34,11 @@ const getMany = () => async (req, res) => {
                 .limit(+limit)
                 .populate(populateParams),
         ]);
-        const { next, last } = pagination_1.calculateNextAndLastUrl({
+        const { next, last } = (0, pagination_1.calculateNextAndLastUrl)({
             offset: +offset,
             limit: +limit,
             total,
-            url: pagination_1.fullUrl(req) + "/api/productos",
+            url: (0, pagination_1.fullUrl)(req) + "/api/productos",
         });
         res.json({ next, last, total, products });
     }
@@ -95,9 +95,9 @@ const modify = () => async (req, res) => {
         const { category, name } = data;
         const { INVALID_REFERENCE, ALREADY_EXISTS } = errors_1.queryErrors;
         if (category && !await models_1.Category.exists({ _id: category, state: true }))
-            throw errors_1.RequestError(INVALID_REFERENCE);
+            throw (0, errors_1.RequestError)(INVALID_REFERENCE);
         if (name && await models_1.Product.exists({ name }))
-            throw errors_1.RequestError(ALREADY_EXISTS);
+            throw (0, errors_1.RequestError)(ALREADY_EXISTS);
         data.editedBy = req.user._id;
         data.category = category;
         const product = await models_1.Product.findByIdAndUpdate(id, data).populate(populateParams);

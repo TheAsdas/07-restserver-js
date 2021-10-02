@@ -3,17 +3,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
 const controller_1 = require("../controller");
-const db_validator_1 = require("../helpers/db-validator");
+const db_validator_1 = require("../helpers/db_validator");
 const middlewares_1 = require("../middlewares");
-const router = express_1.Router();
+const router = (0, express_1.Router)();
 const validate = {
     post: [
         middlewares_1.validateJwt,
-        express_validator_1.check("name", "El nombre es obligatorio.").not().isEmpty(),
+        (0, express_validator_1.check)("name", "El nombre es obligatorio.").not().isEmpty(),
         middlewares_1.validateRequestFields,
     ],
     getOne: [
-        express_validator_1.check("id")
+        (0, express_validator_1.check)("id")
             .isMongoId()
             .withMessage("La ID es inválida.")
             .custom(db_validator_1.categoryExists),
@@ -21,11 +21,11 @@ const validate = {
     ],
     put: [
         middlewares_1.validateJwt,
-        express_validator_1.check("id")
+        (0, express_validator_1.check)("id")
             .isMongoId()
             .withMessage("La ID es inválida.")
             .custom(db_validator_1.categoryExists),
-        express_validator_1.check("name")
+        (0, express_validator_1.check)("name")
             .notEmpty()
             .withMessage("El nombre es obligatorio.")
             .custom(db_validator_1.categoryNameIsTaken),
@@ -34,7 +34,7 @@ const validate = {
     delete: [
         middlewares_1.validateJwt,
         middlewares_1.userIsAdmin,
-        express_validator_1.check("id")
+        (0, express_validator_1.check)("id")
             .isMongoId()
             .withMessage("La ID es inválida.")
             .custom(db_validator_1.categoryExists),

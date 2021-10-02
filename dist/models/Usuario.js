@@ -26,5 +26,5 @@ schema.methods.toJSON = function () {
     user.uid = _id;
     return user;
 };
-exports.default = mongoose_1.model("Usuario", schema);
+exports.default = (0, mongoose_1.model)("Usuario", schema);
 //# sourceMappingURL=Usuario.js.map

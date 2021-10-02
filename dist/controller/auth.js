@@ -13,12 +13,12 @@ const login = async (req, res) => {
     try {
         const { USER_NOT_REGISTERED, USER_USED_GOOGLE, INCORRECT_PASSWORD } = errors_1.authErrors;
         if (!usuario)
-            throw errors_1.RequestError(USER_NOT_REGISTERED);
+            throw (0, errors_1.RequestError)(USER_NOT_REGISTERED);
         if (usuario.google)
-            throw errors_1.RequestError(USER_USED_GOOGLE);
-        if (!bcryptjs_1.compareSync(clave, usuario.clave))
-            throw errors_1.RequestError(INCORRECT_PASSWORD);
-        const token = await json_web_tokens_1.generateJwt(usuario);
+            throw (0, errors_1.RequestError)(USER_USED_GOOGLE);
+        if (!(0, bcryptjs_1.compareSync)(clave, usuario.clave))
+            throw (0, errors_1.RequestError)(INCORRECT_PASSWORD);
+        const token = await (0, json_web_tokens_1.generateJwt)(usuario);
         res.json({
             msg: "Andy's log are here.",
             usuario,
@@ -35,7 +35,7 @@ exports.login = login;
 const google = async (req, res) => {
     const { id_token } = req.body;
     try {
-        const { nombre, img, correo } = await google_auth_1.verifyGoogleCredentials(id_token);
+        const { nombre, img, correo } = await (0, google_auth_1.verifyGoogleCredentials)(id_token);
         const { USER_DEACTIVATED } = errors_1.authErrors;
         let usuario = await models_1.User.findOne({ correo });
         if (!usuario) {
@@ -51,8 +51,8 @@ const google = async (req, res) => {
             await usuario.save();
         }
         else if (!usuario.estado)
-            throw errors_1.RequestError(USER_DEACTIVATED);
-        const token = await json_web_tokens_1.generateJwt(usuario);
+            throw (0, errors_1.RequestError)(USER_DEACTIVATED);
+        const token = await (0, json_web_tokens_1.generateJwt)(usuario);
         res.json({
             msg: "Has iniciado sesión con Google correctamente.",
             user: usuario,

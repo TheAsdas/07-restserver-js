@@ -38,7 +38,7 @@ const put = async (req, res) => {
     const { id } = req.params;
     const _a = req.body, { clave, google, estado, _id } = _a, data = __rest(_a, ["clave", "google", "estado", "_id"]);
     if (clave) {
-        data.clave = bcryptjs_1.hashSync(clave);
+        data.clave = (0, bcryptjs_1.hashSync)(clave);
     }
     const usuario = await Usuario_1.default.findByIdAndUpdate(id, data);
     res.json({ msg: "Usuario actualizado.", usuario });
@@ -46,7 +46,7 @@ const put = async (req, res) => {
 exports.put = put;
 const post = async (req, res) => {
     const { nombre, correo, clave, rol } = req.body;
-    const hashedPass = bcryptjs_1.hashSync(clave);
+    const hashedPass = (0, bcryptjs_1.hashSync)(clave);
     const usuario = new Usuario_1.default({ nombre, correo, clave: hashedPass, rol });
     try {
         await usuario.save();

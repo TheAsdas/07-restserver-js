@@ -4,5 +4,5 @@ const mongoose_1 = require("mongoose");
 const schema = new mongoose_1.Schema({
     rol: { type: String, required: true },
 });
-exports.default = mongoose_1.model("Role", schema);
+exports.default = (0, mongoose_1.model)("Role", schema);
 //# sourceMappingURL=Role.js.map

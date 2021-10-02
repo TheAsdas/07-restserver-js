@@ -26,5 +26,5 @@ schema.methods.toJSON = function () {
     const _a = this.toObject(), { __v, state } = _a, data = __rest(_a, ["__v", "state"]);
     return data;
 };
-exports.default = mongoose_1.model("Product", schema);
+exports.default = (0, mongoose_1.model)("Product", schema);
 //# sourceMappingURL=Product.js.map

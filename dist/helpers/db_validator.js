@@ -34,4 +34,4 @@ const entryExists = (data) => async (value) => {
         throw Error(`${model.modelName} con ${filterBy}=${value} no existe.`);
 };
 exports.entryExists = entryExists;
-//# sourceMappingURL=db-validator.js.map
+//# sourceMappingURL=db_validator.js.map
