@@ -1,25 +1,16 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifyGoogleCredentials = void 0;
 const google_auth_library_1 = require("google-auth-library");
-const RequestError_1 = __importDefault(require("../models/RequestError"));
+const RequestError_1 = __importDefault(require("../errors/RequestError"));
 const CLIENT_ID = process.env.G_PKEY;
 const client = new google_auth_library_1.OAuth2Client(CLIENT_ID);
-const verifyGoogleCredentials = (idToken) => __awaiter(void 0, void 0, void 0, function* () {
+const verifyGoogleCredentials = async (idToken) => {
     try {
-        const ticket = yield client.verifyIdToken({
+        const ticket = await client.verifyIdToken({
             idToken: idToken,
             audience: CLIENT_ID,
         });
@@ -32,8 +23,8 @@ const verifyGoogleCredentials = (idToken) => __awaiter(void 0, void 0, void 0, f
         return userData;
     }
     catch (error) {
-        throw new RequestError_1.default(400, error.message);
+        throw (0, RequestError_1.default)([400, error.message]);
     }
-});
+};
 exports.verifyGoogleCredentials = verifyGoogleCredentials;
 //# sourceMappingURL=google-auth.js.map

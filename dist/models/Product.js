@@ -13,18 +13,18 @@ var __rest = (this && this.__rest) || function (s, e) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 const schema = new mongoose_1.Schema({
-    nombre: { type: String, required: true },
-    correo: { type: String, required: true, unique: true },
-    clave: { type: String, required: true },
-    img: { type: String },
-    rol: { type: String, required: true },
-    estado: { type: Boolean, default: true },
-    google: { type: Boolean, default: false },
-});
+    createdBy: { type: mongoose_1.Schema.Types.ObjectId, ref: "Usuario", required: true },
+    category: { type: mongoose_1.Schema.Types.ObjectId, ref: "Category", required: true },
+    editedBy: { type: mongoose_1.Schema.Types.ObjectId, ref: "Usuario" },
+    name: { type: String, required: true, unique: true },
+    available: { type: Boolean, default: true },
+    state: { type: Boolean, default: true },
+    description: { type: String },
+    price: { type: Number },
+}, {});
 schema.methods.toJSON = function () {
-    const _a = this.toObject(), { __v, clave, _id } = _a, user = __rest(_a, ["__v", "clave", "_id"]);
-    user.uid = _id;
-    return user;
+    const _a = this.toObject(), { __v, state } = _a, data = __rest(_a, ["__v", "state"]);
+    return data;
 };
-exports.default = (0, mongoose_1.model)("Usuario", schema);
-//# sourceMappingURL=Usuario.js.map
+exports.default = (0, mongoose_1.model)("Product", schema);
+//# sourceMappingURL=Product.js.map

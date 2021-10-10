@@ -1,52 +1,43 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.googleSignIn = exports.login = void 0;
+exports.google = exports.login = void 0;
 const bcryptjs_1 = require("bcryptjs");
-const Usuario_1 = __importDefault(require("../models/Usuario"));
-const json_web_tokens_1 = require("../helpers/json-web-tokens");
-const RequestError_1 = __importDefault(require("../models/RequestError"));
 const google_auth_1 = require("../helpers/google-auth");
-const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const json_web_tokens_1 = require("../helpers/json-web-tokens");
+const errors_1 = require("../errors");
+const models_1 = require("../models");
+const login = async (req, res) => {
+    console.log(req);
     const { correo, clave } = req.body;
-    const usuario = yield Usuario_1.default.findOne({ correo, estado: true });
+    const usuario = await models_1.User.findOne({ correo, estado: true });
     try {
-        const notRegistered = "Este usuario no está registrado en la base de datos.";
-        const incorrectPass = "La contraseña está incorrecta.";
+        const { USER_NOT_REGISTERED, USER_USED_GOOGLE, INCORRECT_PASSWORD } = errors_1.authErrors;
         if (!usuario)
-            throw new RequestError_1.default(401, notRegistered);
-        if (!bcryptjs_1.compareSync(clave, usuario.clave))
-            throw new RequestError_1.default(401, incorrectPass);
-        const token = yield json_web_tokens_1.generateJwt(usuario);
-        return res.json({
+            throw (0, errors_1.RequestError)(USER_NOT_REGISTERED);
+        if (usuario.google)
+            throw (0, errors_1.RequestError)(USER_USED_GOOGLE);
+        if (!(0, bcryptjs_1.compareSync)(clave, usuario.clave))
+            throw (0, errors_1.RequestError)(INCORRECT_PASSWORD);
+        const token = await (0, json_web_tokens_1.generateJwt)(usuario);
+        res.json({
             msg: "Andy's log are here.",
             usuario,
             token,
         });
     }
     catch (error) {
-        const { code: status, message } = error;
+        const { status = 400, message } = error;
         console.log(error);
-        return res.status(status !== null && status !== void 0 ? status : 400).json({ msg: message });
+        res.status(status).json({ msg: message });
     }
-});
+};
 exports.login = login;
-const googleSignIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const google = async (req, res) => {
     const { id_token } = req.body;
     try {
-        const { nombre, img, correo } = yield google_auth_1.verifyGoogleCredentials(id_token);
-        let usuario = yield Usuario_1.default.findOne({ correo });
+        const { nombre, img, correo } = await (0, google_auth_1.verifyGoogleCredentials)(id_token);
+        const { USER_DEACTIVATED } = errors_1.authErrors;
+        let usuario = await models_1.User.findOne({ correo });
         if (!usuario) {
             const userData = {
                 nombre,
@@ -56,24 +47,23 @@ const googleSignIn = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 google: true,
                 rol: "USER",
             };
-            usuario = new Usuario_1.default(userData);
-            yield usuario.save();
+            usuario = new models_1.User(userData);
+            await usuario.save();
         }
-        else if (!usuario.estado) {
-            throw new RequestError_1.default(401, "Este usuario está desactivado.");
-        }
-        const token = yield json_web_tokens_1.generateJwt(usuario);
-        return res.json({
+        else if (!usuario.estado)
+            throw (0, errors_1.RequestError)(USER_DEACTIVATED);
+        const token = await (0, json_web_tokens_1.generateJwt)(usuario);
+        res.json({
             msg: "Has iniciado sesión con Google correctamente.",
             user: usuario,
             token,
         });
     }
     catch (error) {
-        const { code, message } = error;
+        const { status = 400, message: msg } = error;
         console.log(error);
-        return res.status(code !== null && code !== void 0 ? code : 400).json({ msg: message });
+        res.status(status).json({ msg });
     }
-});
-exports.googleSignIn = googleSignIn;
+};
+exports.google = google;
 //# sourceMappingURL=auth.js.map
