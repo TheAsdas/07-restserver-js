@@ -12,6 +12,7 @@ const paths: { [key: string]: string } = {
 	categories: "/api/categorias",
 	users: "/api/usuarios",
 	products: "/api/productos",
+	search: "/api/buscar"
 };
 
 /**

@@ -7,12 +7,6 @@ import output1 = Pagination.next_last.output;
 import input2 = Pagination.normalizePagination.input;
 import output2 = Pagination.normalizePagination.output;
 
-
-export namespace calculateNextAndLastUrl {
-
-
-}
-
 export const calculateNextAndLastUrl = (data: input1) => {
 	const {offset, limit, url, total} = data;
 	const urls: output1 = {};

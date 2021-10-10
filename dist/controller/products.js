@@ -15,11 +15,7 @@ exports.modify = exports.create = exports.remove = exports.getOne = exports.getM
 const pagination_1 = require("../helpers/pagination");
 const models_1 = require("../models");
 const errors_1 = require("../errors");
-const populateParams = [
-    { path: "editedBy", select: "nombre", strictPopulate: false },
-    { path: "createdBy", select: "nombre" },
-    { path: "category", select: "name" },
-];
+const populateParams_1 = require("../database/populateParams");
 const getMany = () => async (req, res) => {
     try {
         const { offset, limit } = (0, pagination_1.normalizePagination)({
@@ -32,7 +28,7 @@ const getMany = () => async (req, res) => {
             models_1.Product.find(query)
                 .skip(+offset)
                 .limit(+limit)
-                .populate(populateParams),
+                .populate(populateParams_1.productPopulateParams),
         ]);
         const { next, last } = (0, pagination_1.calculateNextAndLastUrl)({
             offset: +offset,
@@ -50,7 +46,7 @@ exports.getMany = getMany;
 const getOne = () => async (req, res) => {
     try {
         const { id } = req.params;
-        const product = await models_1.Product.findOne({ _id: id, state: true }).populate(populateParams);
+        const product = await models_1.Product.findOne({ _id: id, state: true }).populate(populateParams_1.productPopulateParams);
         res.json({ product });
     }
     catch (error) {
@@ -94,13 +90,14 @@ const modify = () => async (req, res) => {
         const _a = req.body, { _id, _v, state, createdBy } = _a, data = __rest(_a, ["_id", "_v", "state", "createdBy"]);
         const { category, name } = data;
         const { INVALID_REFERENCE, ALREADY_EXISTS } = errors_1.queryErrors;
-        if (category && !await models_1.Category.exists({ _id: category, state: true }))
+        if (category &&
+            !(await models_1.Category.exists({ _id: category, state: true })))
             throw (0, errors_1.RequestError)(INVALID_REFERENCE);
-        if (name && await models_1.Product.exists({ name }))
+        if (name && (await models_1.Product.exists({ name })))
             throw (0, errors_1.RequestError)(ALREADY_EXISTS);
         data.editedBy = req.user._id;
         data.category = category;
-        const product = await models_1.Product.findByIdAndUpdate(id, data).populate(populateParams);
+        const product = await models_1.Product.findByIdAndUpdate(id, data).populate(populateParams_1.productPopulateParams);
         res.json({ msg: "Modificamos el producto exitosamente.", product });
     }
     catch (error) {

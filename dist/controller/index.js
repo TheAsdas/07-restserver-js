@@ -19,7 +19,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.products = exports.categories = exports.users = exports.auth = void 0;
+exports.search = exports.products = exports.categories = exports.users = exports.auth = void 0;
 const auth = __importStar(require("./auth"));
 exports.auth = auth;
 const users = __importStar(require("./users"));
@@ -28,4 +28,6 @@ const categories = __importStar(require("./categories"));
 exports.categories = categories;
 const products = __importStar(require("./products"));
 exports.products = products;
+const search = __importStar(require("./search"));
+exports.search = search;
 //# sourceMappingURL=index.js.map

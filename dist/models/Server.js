@@ -32,6 +32,7 @@ const paths = {
     categories: "/api/categorias",
     users: "/api/usuarios",
     products: "/api/productos",
+    search: "/api/buscar"
 };
 const ServerConstructor = async (port) => {
     var _a;
